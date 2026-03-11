@@ -790,10 +790,16 @@ tr:hover td{background:rgba(255,255,255,0.015);color:#e5e7eb;}
 <!-- Load Supabase Configuration -->
 <script src="config.js"></script>
 
-<!-- Supabase Client Library -->
-<script src="https://esm.sh/@supabase/supabase-js@2"></script>
+<!-- Supabase Client Library (UMD Build) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/main.umd.js"></script>
 
 <script>
+// Initialize Supabase
+const supabaseClient = window.supabase.createClient(
+  window.SUPABASE_CONFIG.URL,
+  window.SUPABASE_CONFIG.ANON_KEY
+);
+
 /* ════════════════════════════════════════
    DATA STORE
 ════════════════════════════════════════ */
@@ -866,6 +872,74 @@ let nextId = (arr) => (arr.length ? Math.max(...arr.map(x=>x.id))+1 : 1);
 let currentPage = 'dashboard';
 let editId = null;
 let editSection = null;
+
+/* ════════════════════════════════════════
+   LOAD DATA FROM SUPABASE
+════════════════════════════════════════ */
+async function loadDataFromSupabase() {
+  try {
+    const [profileRes, skillsRes, expertiseRes, experienceRes, educationRes, credentialsRes, contactRes, statsRes] = await Promise.all([
+      supabaseClient.from('profile').select('*').single(),
+      supabaseClient.from('skills').select('*').order('id'),
+      supabaseClient.from('expertise').select('*').order('id'),
+      supabaseClient.from('experience').select('*').order('id'),
+      supabaseClient.from('education').select('*').order('id'),
+      supabaseClient.from('credentials').select('*').order('id'),
+      supabaseClient.from('contact').select('*').order('id'),
+      supabaseClient.from('hero_stats').select('*').order('id')
+    ]);
+
+    // Map Supabase data to DB object
+    if (profileRes.data) {
+      const p = profileRes.data;
+      DB.profile = {
+        firstName: p.first_name || DB.profile.firstName,
+        lastName: p.last_name || DB.profile.lastName,
+        dob: p.dob || DB.profile.dob,
+        pob: p.pob || DB.profile.pob,
+        nationality: p.nationality || DB.profile.nationality,
+        religion: p.religion || DB.profile.religion,
+        marital: p.marital_status || DB.profile.marital,
+        phone: p.phone || DB.profile.phone,
+        email: p.email || DB.profile.email,
+        role: p.role || DB.profile.role,
+        bio1: p.bio1 || DB.profile.bio1,
+        bio2: p.bio2 || DB.profile.bio2,
+        bio3: p.bio3 || DB.profile.bio3,
+        bio4: p.bio4 || DB.profile.bio4,
+        bio5: p.bio5 || DB.profile.bio5
+      };
+    }
+
+    if (skillsRes.data && skillsRes.data.length) {
+      DB.skills = skillsRes.data.map(s => ({ id: s.id, name: s.name, category: s.category }));
+    }
+    if (expertiseRes.data && expertiseRes.data.length) {
+      DB.expertise = expertiseRes.data.map(e => ({ id: e.id, icon: e.icon, title: e.title, desc: e.description }));
+    }
+    if (experienceRes.data && experienceRes.data.length) {
+      DB.experience = experienceRes.data.map(e => ({ id: e.id, period: e.period, role: e.role, org: e.organization, desc: e.description }));
+    }
+    if (educationRes.data && educationRes.data.length) {
+      DB.education = educationRes.data.map(e => ({ id: e.id, period: e.period, qualification: e.qualification, institution: e.institution, desc: e.description }));
+    }
+    if (credentialsRes.data && credentialsRes.data.length) {
+      DB.credentials = credentialsRes.data.map(c => ({ id: c.id, icon: c.icon, title: c.title, org: c.organization, detail: c.detail, badge: c.badge, badgeType: c.badge_type }));
+    }
+    if (contactRes.data && contactRes.data.length) {
+      DB.contact = contactRes.data.map(c => ({ id: c.id, icon: c.icon, label: c.label, value: c.value }));
+    }
+    if (statsRes.data && statsRes.data.length) {
+      DB.heroStats = statsRes.data.map(s => ({ id: s.id, num: s.num, label: s.label }));
+    }
+
+    console.log('✅ Data loaded from Supabase');
+    renderAll();
+  } catch (error) {
+    console.warn('⚠️ Could not load from Supabase, using default data:', error.message);
+    renderAll();
+  }
+}
 
 /* ════════════════════════════════════════
    RENDER PUBLIC SITE
@@ -1216,6 +1290,52 @@ function openEditProfile(){
 
 function closeModal(){ document.getElementById('admModal').classList.add('hidden'); editId=null; editSection=null; }
 
+/* ════════════════════════════════════════
+   SUPABASE CRUD FUNCTIONS
+════════════════════════════════════════ */
+async function updateSupabase(table, id, data) {
+  try {
+    const { error } = await supabaseClient
+      .from(table)
+      .update({ ...data, updated_at: new Date() })
+      .eq('id', id);
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Error updating Supabase:', error);
+    return false;
+  }
+}
+
+async function insertSupabase(table, data) {
+  try {
+    const { data: newData, error } = await supabaseClient
+      .from(table)
+      .insert([data])
+      .select()
+      .single();
+    if (error) throw error;
+    return newData;
+  } catch (error) {
+    console.error('Error inserting into Supabase:', error);
+    return null;
+  }
+}
+
+async function deleteSupabase(table, id) {
+  try {
+    const { error } = await supabaseClient
+      .from(table)
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Error deleting from Supabase:', error);
+    return false;
+  }
+}
+
 function saveModal(){
   if(!editSection) return;
   const data = modalSave[editSection] ? modalSave[editSection]() : null;
@@ -1223,17 +1343,50 @@ function saveModal(){
 
   if(editSection==='profile'){
     Object.assign(DB.profile, data);
+    // Save profile to Supabase
+    const profileData = {
+      first_name: data.firstName || DB.profile.firstName,
+      last_name: data.lastName || DB.profile.lastName,
+      dob: data.dob,
+      pob: data.pob,
+      nationality: data.nationality,
+      religion: data.religion,
+      marital_status: data.marital,
+      phone: data.phone,
+      email: data.email,
+      role: data.role,
+      bio1: data.bio1,
+      bio2: data.bio2,
+      bio3: data.bio3,
+      bio4: data.bio4,
+      bio5: data.bio5
+    };
+    updateSupabase('profile', DB.profile.id || 1, profileData).then(success => {
+      if (success) toast('✅ Profile saved to Supabase!', 'success');
+      else toast('⚠️ Profile updated locally (Supabase sync failed)', 'success');
+    });
     renderAll();
     renderAdmProfile();
-    toast('Profile updated successfully!','success');
+    toast('Profile updated!','success');
   } else {
     const arr=DB[editSection];
     if(editId){
       const i=arr.findIndex(x=>x.id===editId);
       if(i>-1) arr[i]={...arr[i],...data};
+      // Update in Supabase
+      updateSupabase(editSection, editId, mapDataForSupabase(editSection, data)).then(success => {
+        if (success) toast('✅ Item updated in Supabase!', 'success');
+        else toast('⚠️ Item updated locally (Supabase sync failed)', 'success');
+      });
       toast('Item updated!','success');
     } else {
-      arr.push({id:nextId(arr),...data});
+      const newId = nextId(arr);
+      arr.push({id: newId, ...data});
+      // Insert into Supabase
+      insertSupabase(editSection, mapDataForSupabase(editSection, {...data, id: newId})).then(result => {
+        if (result) toast('✅ Item added to Supabase!', 'success');
+        else toast('⚠️ Item added locally (Supabase sync failed)', 'success');
+      });
       toast('Item added!','success');
     }
     renderAll();
@@ -1242,11 +1395,42 @@ function saveModal(){
   closeModal();
 }
 
+// Helper function to map DB fields to Supabase schema
+function mapDataForSupabase(section, data) {
+  const mapping = {
+    expertise: { icon: 'icon', title: 'title', desc: 'description' },
+    experience: { period: 'period', role: 'role', org: 'organization', desc: 'description' },
+    education: { period: 'period', qualification: 'qualification', institution: 'institution', desc: 'description' },
+    credentials: { icon: 'icon', title: 'title', org: 'organization', detail: 'detail', badge: 'badge', badgeType: 'badge_type' },
+    contact: { icon: 'icon', label: 'label', value: 'value' },
+    skills: { name: 'name', category: 'category' },
+    hero_stats: { num: 'num', label: 'label' }
+  };
+  
+  const mapped = {};
+  if (mapping[section]) {
+    Object.entries(mapping[section]).forEach(([dbKey, tableKey]) => {
+      if (data[dbKey] !== undefined) {
+        mapped[tableKey] = data[dbKey];
+      }
+    });
+  }
+  return mapped;
+}
+
 function deleteItem(section, id){
   if(!confirm('Delete this item? This cannot be undone.')) return;
   const arr=DB[section];
   const i=arr.findIndex(x=>x.id===id);
-  if(i>-1){ arr.splice(i,1); toast('Item deleted.','success'); }
+  if(i>-1){
+    arr.splice(i,1);
+    // Delete from Supabase
+    deleteSupabase(section, id).then(success => {
+      if (success) toast('✅ Item deleted from Supabase!', 'success');
+      else toast('⚠️ Item deleted locally (Supabase sync failed)', 'success');
+    });
+    toast('Item deleted.','success');
+  }
   renderAll();
   renderAdminPage(section);
 }
@@ -1389,7 +1573,7 @@ new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){navLi
 /* ════════════════════════════════════════
    INIT
 ════════════════════════════════════════ */
-renderAll();
+loadDataFromSupabase();
 reObserve();
 </script>
 </body>
