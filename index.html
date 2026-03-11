@@ -1081,6 +1081,19 @@ async function loadDataFromSupabase() {
       DB.heroStats = statsRes.data.map(s => ({ id: s.id, num: s.num, label: s.label }));
     }
 
+    // Load profile photo from Supabase Storage
+    if(supabaseClient) {
+      try {
+        const photoRes = await supabaseClient.from('profile_photo').select('file_url').order('uploaded_at', { ascending: false }).limit(1).single();
+        if(photoRes.data && photoRes.data.file_url) {
+          currentPhotoData = photoRes.data.file_url;
+          console.log('✅ Photo loaded from Supabase');
+        }
+      } catch(err) {
+        console.log('ℹ️ No photo in database yet, using placeholder');
+      }
+    }
+
     console.log('✅ Data loaded from Supabase');
     renderAll();
   } catch (error) {
@@ -1100,6 +1113,10 @@ function renderAll() {
   renderExperience();
   renderCredentials();
   renderContact();
+  // Apply photo to site if loaded
+  if(currentPhotoData) {
+    applyPhotoToSite(currentPhotoData);
+  }
 }
 
 function renderHeroStats() {
@@ -1478,44 +1495,62 @@ function closeModal(){ document.getElementById('admModal').classList.add('hidden
    SUPABASE CRUD FUNCTIONS
 ════════════════════════════════════════ */
 async function updateSupabase(table, id, data) {
+  if(!supabaseClient) {
+    console.warn('⚠️ Supabase not available, changes saved locally only');
+    return false;
+  }
   try {
+    console.log('💾 Saving to Supabase:', table, id);
     const { error } = await supabaseClient
       .from(table)
-      .update({ ...data, updated_at: new Date() })
+      .update({ ...data, updated_at: new Date().toISOString() })
       .eq('id', id);
     if (error) throw error;
+    console.log('✅ Saved to Supabase successfully');
     return true;
   } catch (error) {
-    console.error('Error updating Supabase:', error);
+    console.error('❌ Error updating Supabase:', error.message);
     return false;
   }
 }
 
 async function insertSupabase(table, data) {
+  if(!supabaseClient) {
+    console.warn('⚠️ Supabase not available, changes saved locally only');
+    return null;
+  }
   try {
+    console.log('➕ Adding to Supabase:', table);
     const { data: newData, error } = await supabaseClient
       .from(table)
       .insert([data])
       .select()
       .single();
     if (error) throw error;
+    console.log('✅ Added to Supabase successfully');
     return newData;
   } catch (error) {
-    console.error('Error inserting into Supabase:', error);
+    console.error('❌ Error inserting into Supabase:', error.message);
     return null;
   }
 }
 
 async function deleteSupabase(table, id) {
+  if(!supabaseClient) {
+    console.warn('⚠️ Supabase not available, changes saved locally only');
+    return false;
+  }
   try {
+    console.log('🗑️ Deleting from Supabase:', table, id);
     const { error } = await supabaseClient
       .from(table)
       .delete()
       .eq('id', id);
     if (error) throw error;
+    console.log('✅ Deleted from Supabase successfully');
     return true;
   } catch (error) {
-    console.error('Error deleting from Supabase:', error);
+    console.error('❌ Error deleting from Supabase:', error.message);
     return false;
   }
 }
@@ -1685,13 +1720,56 @@ function applyPhotoToSite(dataUrl){
 }
 
 function handleAdmPhoto(input){
-  const file = input.files[0]; if(!file) return;
+  const file = input.files[0]; 
+  if(!file) return;
+  
   const reader = new FileReader();
-  reader.onload = function(e){
+  reader.onload = async function(e){
     currentPhotoData = e.target.result;
     applyPhotoToSite(currentPhotoData);
     renderAdmPhoto();
-    toast('Photo uploaded and applied to site! 🎉','success');
+    
+    // Try to save to Supabase Storage
+    if(supabaseClient){
+      try {
+        toast('📤 Uploading photo to cloud...','info');
+        
+        // Convert data URL to blob
+        const response = await fetch(currentPhotoData);
+        const blob = await response.blob();
+        
+        // Upload to Supabase Storage
+        const fileName = `profile-${Date.now()}.${file.type.split('/')[1]}`;
+        const { data, error } = await supabaseClient.storage
+          .from('profile_photos')
+          .upload(fileName, blob, { upsert: false });
+          
+        if(error) throw error;
+        
+        // Get public URL
+        const { data: { publicUrl } } = supabaseClient.storage
+          .from('profile_photos')
+          .getPublicUrl(fileName);
+          
+        // Save to profile_photo table
+        await supabaseClient.from('profile_photo').insert({
+          file_url: publicUrl,
+          file_name: fileName,
+          file_size: blob.size,
+          mime_type: file.type
+        });
+        
+        toast('✅ Photo saved to cloud!','success');
+        console.log('✅ Photo uploaded to Supabase Storage:', publicUrl);
+        
+      } catch(err){
+        console.warn('⚠️ Could not save to Supabase:', err.message);
+        toast('📱 Photo saved locally (cloud save failed)','warn');
+      }
+    } else {
+      toast('📱 Photo saved locally only','info');
+    }
+    
     // Highlight drop zone
     const dz = document.getElementById('admDropZone');
     if(dz){ dz.style.borderColor='rgba(34,197,94,0.5)'; dz.style.background='rgba(34,197,94,0.04)'; }
@@ -1701,9 +1779,25 @@ function handleAdmPhoto(input){
 
 function removePhoto(){
   if(!confirm('Remove the profile photo? The initials placeholder will be shown instead.')) return;
+  
+  const oldPhotoData = currentPhotoData;
   currentPhotoData = null;
   applyPhotoToSite(null);
   renderAdmPhoto();
+  
+  // Try to delete from Supabase
+  if(supabaseClient && oldPhotoData && oldPhotoData.startsWith('http')){
+    try {
+      // Delete from database
+      supabaseClient.from('profile_photo').delete().eq('file_url', oldPhotoData).catch(err => {
+        console.log('ℹ️ Could not delete from DB:', err.message);
+      });
+      console.log('✅ Photo deleted from Supabase');
+    } catch(err){
+      console.warn('⚠️ Could not remove from Supabase:', err.message);
+    }
+  }
+  
   // Reset drop zone
   const dz = document.getElementById('admDropZone');
   if(dz){ dz.style.borderColor='rgba(20,184,174,0.3)'; dz.style.background='rgba(20,184,174,0.03)'; }

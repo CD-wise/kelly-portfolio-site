@@ -7,6 +7,22 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ════════════════════════════════════════
+-- ADMIN/USERS TABLE
+-- ════════════════════════════════════════
+CREATE TABLE admin_users (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  username VARCHAR(100) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  email VARCHAR(255),
+  full_name VARCHAR(255),
+  role VARCHAR(50) DEFAULT 'admin',
+  is_active BOOLEAN DEFAULT true,
+  last_login TIMESTAMP,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- ════════════════════════════════════════
 -- PROFILE TABLE
 -- ════════════════════════════════════════
 CREATE TABLE profile (
@@ -134,6 +150,19 @@ CREATE TABLE profile_photo (
 -- INSERT DEFAULT DATA
 -- ════════════════════════════════════════
 
+-- Insert Admin User
+-- Note: Password is hashed using bcrypt (or use MD5/SHA256 for simple setup)
+-- For this setup, storing plaintext for simplicity (⚠️ DO NOT use in production)
+-- Use bcrypt or similar: https://bcrypt-generator.com/
+INSERT INTO admin_users (username, password_hash, email, full_name, role)
+VALUES (
+  'druterus',
+  'kelly123', -- In production, use bcrypt: bcryptjs.hashSync('kelly123', 10)
+  'admin@emmanuel-abakah.com',
+  'Admin User',
+  'admin'
+);
+
 -- Insert Profile
 INSERT INTO profile (first_name, last_name, dob, pob, nationality, religion, marital_status, phone, email, role, bio1, bio2, bio3, bio4, bio5)
 VALUES (
@@ -215,6 +244,7 @@ INSERT INTO hero_stats (num, label) VALUES
 -- ════════════════════════════════════════
 
 -- Enable RLS on all tables
+ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
 ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE expertise ENABLE ROW LEVEL SECURITY;
@@ -224,6 +254,9 @@ ALTER TABLE credentials ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact ENABLE ROW LEVEL SECURITY;
 ALTER TABLE hero_stats ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profile_photo ENABLE ROW LEVEL SECURITY;
+
+-- Admin users policy - allow login verification (select only)
+CREATE POLICY "Allow login verification" ON admin_users FOR SELECT USING (true);
 
 -- Create public read policies (anyone can view)
 CREATE POLICY "Public can view profile" ON profile FOR SELECT USING (true);
