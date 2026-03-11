@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emmanuel Abakah | Medical Sonographer & Administrator</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --bg:#070e1c; --bg2:#0b1526; --bg3:#0f1d35;
+  --gold:#c9a96e; --gold-lt:#e2c898; --gold-dk:#9d7d4a;
+  --teal:#0b8f88; --teal-lt:#14b8ae;
+  --white:#f0ece4; --muted:#6b7f9e;
+  --border:rgba(201,169,110,0.15); --border2:rgba(201,169,110,0.08);
+  --card:rgba(255,255,255,0.025);
+  --glow-t:rgba(20,184,174,0.18); --glow-g:rgba(201,169,110,0.12);
+  --radius:0.75rem; --tr:0.35s cubic-bezier(0.4,0,0.2,1);
+  /* Admin */
+  --adm-bg:#0a0f1e; --adm-side:#0d1428; --adm-card:#111827;
+  --adm-border:#1e2d45; --adm-accent:#14b8ae; --adm-gold:#c9a96e;
+  --adm-danger:#ef4444; --adm-success:#22c55e; --adm-warn:#f59e0b;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+ul{list-style:none;}
+img{max-width:100%;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--gold-dk);border-radius:4px;}
+
+/* ═══════════════════════════════════════
+   CURSOR GLOW
+═══════════════════════════════════════ */
+.cursor-glow{position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,174,0.06) 0%,transparent 70%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);}
+
+/* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;display:flex;justify-content:space-between;align-items:center;padding:0 5%;height:70px;background:rgba(7,14,28,0.88);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border);transition:background var(--tr);}
+nav.scrolled{background:rgba(7,14,28,0.97);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:500;color:var(--gold);letter-spacing:0.06em;display:flex;align-items:center;gap:0.5rem;}
+.nav-logo-dot{width:6px;height:6px;border-radius:50%;background:var(--teal-lt);animation:pulse-dot 2.5s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 0 0 rgba(20,184,174,0.5)}50%{opacity:0.7;transform:scale(1.3);box-shadow:0 0 0 5px rgba(20,184,174,0)}}
+.nav-links{display:flex;gap:2.5rem;align-items:center;}
+.nav-links a{font-size:0.78rem;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);transition:color var(--tr);position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform var(--tr);}
+.nav-links a:hover{color:var(--gold);}
+.nav-links a:hover::after{transform:scaleX(1);}
+.nav-cta{background:linear-gradient(135deg,var(--teal),var(--teal-lt));color:#fff!important;padding:0.5rem 1.3rem;border-radius:2rem;font-size:0.78rem!important;font-weight:500!important;letter-spacing:0.06em!important;text-transform:uppercase!important;transition:all var(--tr)!important;}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(11,143,136,0.4);}
+.nav-cta::after{display:none!important;}
+.nav-admin-btn{background:rgba(201,169,110,0.1);border:1px solid var(--border);color:var(--gold)!important;padding:0.45rem 1rem;border-radius:0.4rem;font-size:0.75rem!important;font-weight:500!important;letter-spacing:0.06em!important;text-transform:uppercase!important;cursor:pointer;transition:all var(--tr)!important;display:flex;align-items:center;gap:0.4rem;}
+.nav-admin-btn:hover{background:rgba(201,169,110,0.18);border-color:var(--gold);}
+.nav-admin-btn::after{display:none!important;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+.hamburger span{width:24px;height:1.5px;background:var(--gold);transition:all 0.3s;display:block;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-5px);}
+.mobile-menu{display:none;position:fixed;top:70px;left:0;right:0;z-index:800;background:rgba(7,14,28,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:2rem 5%;flex-direction:column;gap:1.5rem;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:1rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;transition:color var(--tr);}
+.mobile-menu a:hover{color:var(--gold);}
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero{min-height:100vh;display:flex;align-items:center;padding:110px 5% 80px;position:relative;overflow:hidden;}
+.hero-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);}
+.orb1{width:700px;height:700px;top:-200px;right:-200px;background:var(--glow-t);animation:orb-drift 12s ease-in-out infinite;}
+.orb2{width:500px;height:500px;bottom:-150px;left:-100px;background:var(--glow-g);animation:orb-drift 16s 4s ease-in-out infinite reverse;}
+.orb3{width:300px;height:300px;top:50%;left:50%;background:rgba(11,143,136,0.06);animation:orb-drift 20s 8s ease-in-out infinite;}
+@keyframes orb-drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-15px,25px) scale(0.97)}}
+.hero-grid-lines{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(201,169,110,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,169,110,0.03) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 0%,transparent 100%);}
+.hero-inner{display:grid;grid-template-columns:1.1fr 0.9fr;gap:5rem;align-items:center;max-width:1240px;width:100%;position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:0.6rem;background:rgba(201,169,110,0.08);border:1px solid rgba(201,169,110,0.25);padding:0.45rem 1.1rem;border-radius:2rem;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem;animation:fadeUp 0.9s ease both;}
+.badge-ping{position:relative;width:8px;height:8px;}
+.badge-ping::before,.badge-ping::after{content:'';position:absolute;inset:0;border-radius:50%;}
+.badge-ping::before{background:var(--teal-lt);}
+.badge-ping::after{background:var(--teal-lt);opacity:0.6;animation:ping 2s cubic-bezier(0,0,0.2,1) infinite;}
+@keyframes ping{0%{transform:scale(1);opacity:0.6}100%{transform:scale(2.5);opacity:0}}
+.hero-name{font-family:'Cormorant Garamond',serif;font-size:clamp(3.8rem,6.5vw,6.2rem);font-weight:300;line-height:0.98;letter-spacing:-0.015em;animation:fadeUp 0.9s 0.12s ease both;}
+.hero-name .first{display:block;color:var(--white);}
+.hero-name .last{display:block;color:var(--gold);font-style:italic;}
+.hero-divider{width:60px;height:1px;background:linear-gradient(90deg,var(--teal-lt),var(--gold));margin:1.8rem 0;animation:fadeUp 0.9s 0.24s ease both;}
+.hero-role{font-size:0.82rem;color:var(--teal-lt);letter-spacing:0.18em;text-transform:uppercase;font-weight:400;margin-bottom:1.5rem;animation:fadeUp 0.9s 0.3s ease both;}
+.hero-desc{color:var(--muted);line-height:1.9;font-size:0.93rem;max-width:500px;font-weight:300;animation:fadeUp 0.9s 0.38s ease both;}
+.hero-ctas{display:flex;gap:1rem;margin-top:2.8rem;flex-wrap:wrap;animation:fadeUp 0.9s 0.46s ease both;}
+.btn-primary{display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,var(--teal),var(--teal-lt));color:#fff;padding:0.9rem 2.2rem;border-radius:0.5rem;font-size:0.84rem;font-weight:500;letter-spacing:0.06em;border:none;cursor:pointer;transition:all var(--tr);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(11,143,136,0.45);}
+.btn-secondary{display:inline-flex;align-items:center;gap:0.5rem;background:transparent;color:var(--gold);padding:0.9rem 2.2rem;border-radius:0.5rem;font-size:0.84rem;font-weight:400;letter-spacing:0.06em;border:1px solid rgba(201,169,110,0.3);transition:all var(--tr);}
+.btn-secondary:hover{background:rgba(201,169,110,0.06);border-color:var(--gold);}
+.hero-stats{display:flex;gap:0;margin-top:3.5rem;animation:fadeUp 0.9s 0.54s ease both;}
+.hero-stat{padding:1.2rem 2rem 1.2rem 0;border-right:1px solid var(--border);margin-right:2rem;}
+.hero-stat:last-child{border-right:none;}
+.hs-num{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:500;color:var(--gold);line-height:1;}
+.hs-label{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-top:4px;}
+
+/* ── PHOTO FRAME ── */
+.hero-visual{display:flex;justify-content:center;align-items:center;position:relative;min-height:520px;animation:fadeIn 1.2s 0.3s ease both;}
+.hero-visual::before{content:'';position:absolute;top:20px;left:20px;width:60px;height:60px;border-top:1px solid rgba(201,169,110,0.15);border-left:1px solid rgba(201,169,110,0.15);pointer-events:none;}
+.hero-visual::after{content:'';position:absolute;bottom:20px;right:20px;width:60px;height:60px;border-bottom:1px solid rgba(20,184,174,0.12);border-right:1px solid rgba(20,184,174,0.12);pointer-events:none;}
+.avatar-wrap{position:relative;width:340px;height:340px;}
+.avatar-aura{position:absolute;inset:-50px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,174,0.13) 0%,rgba(201,169,110,0.07) 45%,transparent 70%);animation:aura-breathe 3.5s ease-in-out infinite;pointer-events:none;z-index:0;}
+@keyframes aura-breathe{0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.1);opacity:1}}
+.ring-outer{position:absolute;inset:-26px;border-radius:50%;border:1px dashed rgba(201,169,110,0.4);animation:spin-cw 28s linear infinite;z-index:1;}
+.ring-outer::before{content:'';position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold),0 0 22px rgba(201,169,110,0.5);}
+.ring-mid{position:absolute;inset:-13px;border-radius:50%;border:1px solid rgba(20,184,174,0.28);animation:spin-ccw 18s linear infinite;z-index:1;}
+.ring-mid::before{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:var(--teal-lt);box-shadow:0 0 8px var(--teal-lt),0 0 16px rgba(20,184,174,0.4);}
+@keyframes spin-cw{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-ccw{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+.avatar-core{width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;z-index:2;background:radial-gradient(circle at 35% 35%,var(--bg3),var(--bg2));box-shadow:inset 0 0 40px rgba(20,184,174,0.07),0 0 50px rgba(20,184,174,0.15),0 0 100px rgba(201,169,110,0.07);}
+.avatar-core img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;transition:transform 0.6s ease;}
+.avatar-core img:hover{transform:scale(1.04);}
+.avatar-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.4rem;}
+.avatar-initials{font-family:'Cormorant Garamond',serif;font-size:5.5rem;font-weight:300;color:var(--gold);opacity:0.72;letter-spacing:-0.05em;line-height:1;}
+.avatar-hint{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;}
+.avatar-shimmer{position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,rgba(201,169,110,0.04) 0%,transparent 50%,rgba(20,184,174,0.03) 100%);pointer-events:none;z-index:3;}
+.geo-corner{position:absolute;width:22px;height:22px;z-index:4;pointer-events:none;}
+.gc-tl{top:-4px;left:-4px;border-top:2px solid var(--gold);border-left:2px solid var(--gold);}
+.gc-tr{top:-4px;right:-4px;border-top:2px solid var(--gold);border-right:2px solid var(--gold);}
+.gc-bl{bottom:-4px;left:-4px;border-bottom:2px solid var(--teal-lt);border-left:2px solid var(--teal-lt);}
+.gc-br{bottom:-4px;right:-4px;border-bottom:2px solid var(--teal-lt);border-right:2px solid var(--teal-lt);}
+.particles{position:absolute;inset:-65px;pointer-events:none;z-index:1;}
+.particle{position:absolute;border-radius:50%;animation:p-orbit linear infinite;}
+.p1{width:4px;height:4px;top:10%;left:50%;background:var(--gold);opacity:.65;animation-duration:9s;}
+.p2{width:3px;height:3px;top:25%;left:90%;background:var(--teal-lt);opacity:.5;animation-duration:12s;animation-delay:-2s;}
+.p3{width:5px;height:5px;top:50%;left:96%;background:var(--gold);opacity:.5;animation-duration:10s;animation-delay:-4s;}
+.p4{width:3px;height:3px;top:75%;left:88%;background:var(--teal-lt);opacity:.45;animation-duration:14s;animation-delay:-1s;}
+.p5{width:4px;height:4px;top:92%;left:50%;background:var(--gold);opacity:.6;animation-duration:11s;animation-delay:-6s;}
+.p6{width:3px;height:3px;top:75%;left:12%;background:var(--teal-lt);opacity:.45;animation-duration:13s;animation-delay:-3s;}
+.p7{width:5px;height:5px;top:50%;left:4%;background:var(--gold);opacity:.5;animation-duration:9.5s;animation-delay:-7s;}
+.p8{width:3px;height:3px;top:25%;left:12%;background:var(--teal-lt);opacity:.45;animation-duration:15s;animation-delay:-5s;}
+.p9{width:2px;height:2px;top:4%;left:30%;background:var(--gold);opacity:.35;animation-duration:17s;animation-delay:-2s;}
+.p10{width:2px;height:2px;top:4%;left:70%;background:var(--teal-lt);opacity:.35;animation-duration:16s;animation-delay:-8s;}
+.p11{width:3px;height:3px;top:96%;left:30%;background:var(--gold);opacity:.4;animation-duration:12s;animation-delay:-9s;}
+.p12{width:2px;height:2px;top:96%;left:70%;background:var(--teal-lt);opacity:.35;animation-duration:18s;animation-delay:-4s;}
+@keyframes p-orbit{0%{transform:rotate(0deg) translateX(195px) rotate(0deg)}100%{transform:rotate(360deg) translateX(195px) rotate(-360deg)}}
+.float-pill{position:absolute;z-index:10;background:rgba(7,14,28,0.94);border:1px solid var(--border);border-radius:1rem;padding:0.9rem 1.3rem;backdrop-filter:blur(16px);box-shadow:0 10px 40px rgba(0,0,0,0.5);min-width:130px;}
+.fp1{top:-18px;right:-68px;animation:float-a 3.5s ease-in-out infinite;}
+.fp2{bottom:10px;left:-72px;animation:float-a 3.5s 1.2s ease-in-out infinite;}
+.fp3{bottom:-22px;right:-55px;animation:float-a 3.5s 2.4s ease-in-out infinite;}
+.fp4{top:50%;left:-88px;transform:translateY(-50%);animation:float-b 3.5s 0.6s ease-in-out infinite;}
+@keyframes float-a{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes float-b{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 10px))}}
+.fp-icon{font-size:1.1rem;margin-bottom:0.35rem;}
+.fp-label{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
+.fp-value{font-size:0.83rem;color:var(--teal-lt);font-weight:500;margin-top:2px;}
+.fp-value.gold{color:var(--gold);}
+#photoInput{display:none;}
+
+/* ═══════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════ */
+section{padding:110px 5%;position:relative;}
+section.alt{background:var(--bg2);}
+.container{max-width:1240px;margin:0 auto;}
+.sec-eyebrow{display:flex;align-items:center;gap:0.8rem;font-size:0.7rem;color:var(--teal-lt);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:0.8rem;}
+.sec-eyebrow::before{content:'';width:30px;height:1px;background:var(--teal-lt);}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.2rem);font-weight:300;line-height:1.1;margin-bottom:0.6rem;}
+.sec-title em{color:var(--gold);font-style:italic;}
+.sec-subtitle{color:var(--muted);font-size:0.9rem;line-height:1.8;max-width:580px;}
+.hr{height:1px;margin:0 5%;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:6rem;align-items:start;margin-top:4rem;}
+.info-table{margin-top:0;}
+.info-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border2);}
+.info-row:first-child{border-top:1px solid var(--border2);}
+.info-cell{padding:0.9rem 0.5rem;}
+.info-cell:first-child{border-right:1px solid var(--border2);}
+.i-label{font-size:0.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.25rem;}
+.i-value{font-size:0.88rem;color:var(--white);font-weight:300;}
+.skills-wrap{margin-top:2.5rem;}
+.skills-title{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:1rem;}
+.skill-tags{display:flex;flex-wrap:wrap;gap:0.5rem;}
+.skill-tag{background:rgba(11,143,136,0.08);border:1px solid rgba(11,143,136,0.25);color:var(--teal-lt);padding:0.38rem 1rem;border-radius:2rem;font-size:0.75rem;letter-spacing:0.04em;transition:all var(--tr);}
+.skill-tag:hover{background:rgba(11,143,136,0.15);border-color:var(--teal-lt);}
+.about-text{color:var(--muted);line-height:1.95;font-size:0.92rem;font-weight:300;}
+.about-text p+p{margin-top:1.3rem;}
+.about-text strong{color:var(--white);font-weight:500;}
+.hobbies-row{display:flex;gap:1rem;margin-top:2rem;flex-wrap:wrap;}
+.hobby-chip{display:flex;align-items:center;gap:0.5rem;background:var(--card);border:1px solid var(--border);padding:0.5rem 1rem;border-radius:0.5rem;font-size:0.8rem;color:var(--muted);}
+
+/* EXPERTISE */
+.expertise-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:4rem;}
+.exp-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:2rem 1.8rem;position:relative;overflow:hidden;transition:all var(--tr);cursor:default;}
+.exp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--teal),var(--gold));transform:scaleX(0);transform-origin:left;transition:transform var(--tr);}
+.exp-card:hover{transform:translateY(-5px);border-color:rgba(201,169,110,0.25);box-shadow:0 16px 48px rgba(0,0,0,0.35);}
+.exp-card:hover::before{transform:scaleX(1);}
+.exp-icon-wrap{width:50px;height:50px;background:linear-gradient(135deg,rgba(11,143,136,0.15),rgba(201,169,110,0.08));border:1px solid var(--border);border-radius:0.6rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.3rem;}
+.exp-title{font-size:1rem;font-weight:500;margin-bottom:0.6rem;}
+.exp-desc{font-size:0.81rem;color:var(--muted);line-height:1.75;}
+
+/* TIMELINE */
+.timeline-wrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-top:4rem;}
+.timeline-col-label{font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.16em;margin-bottom:2rem;display:flex;align-items:center;gap:0.7rem;}
+.timeline-col-label::before{content:'';width:20px;height:1px;background:var(--gold);}
+.timeline{position:relative;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:0;top:8px;bottom:0;width:1px;background:linear-gradient(to bottom,var(--teal-lt),var(--gold),rgba(201,169,110,0.1));}
+.tl-item{position:relative;padding-bottom:2.5rem;}
+.tl-item::before{content:'';position:absolute;left:-2rem;top:6px;width:9px;height:9px;border-radius:50%;background:var(--bg2);border:2px solid var(--teal-lt);box-shadow:0 0 0 3px rgba(20,184,174,0.2);transition:all var(--tr);}
+.tl-item:hover::before{background:var(--teal-lt);box-shadow:0 0 0 5px rgba(20,184,174,0.15);}
+.tl-period{font-size:0.68rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:0.3rem;}
+.tl-role{font-family:'Cormorant Garamond',serif;font-size:1.18rem;font-weight:400;margin-bottom:0.2rem;}
+.tl-org{font-size:0.8rem;color:var(--teal-lt);margin-bottom:0.7rem;}
+.tl-desc{font-size:0.81rem;color:var(--muted);line-height:1.75;}
+.tl-desc li{margin-bottom:0.25rem;padding-left:0.9rem;position:relative;}
+.tl-desc li::before{content:'—';position:absolute;left:0;color:var(--gold-dk);}
+
+/* CREDENTIALS */
+.creds-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:4rem;}
+.cred-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:1.8rem;display:flex;gap:1.2rem;align-items:flex-start;transition:all var(--tr);}
+.cred-card:hover{background:rgba(11,143,136,0.05);border-color:rgba(11,143,136,0.3);transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,0.3);}
+.cred-icon-wrap{width:44px;height:44px;flex-shrink:0;background:linear-gradient(135deg,rgba(201,169,110,0.12),rgba(11,143,136,0.08));border:1px solid var(--border);border-radius:0.5rem;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.cred-title{font-size:0.9rem;font-weight:500;margin-bottom:0.3rem;line-height:1.3;}
+.cred-org{font-size:0.76rem;color:var(--teal-lt);margin-bottom:0.5rem;}
+.cred-detail{font-size:0.74rem;color:var(--muted);line-height:1.6;}
+.cred-badge{display:inline-block;margin-top:0.6rem;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.25);color:var(--gold);font-size:0.65rem;padding:0.2rem 0.65rem;border-radius:1rem;text-transform:uppercase;letter-spacing:0.1em;}
+.cred-badge.green{background:rgba(20,184,174,0.1);border-color:rgba(20,184,174,0.25);color:var(--teal-lt);}
+
+/* CONTACT */
+.contact-inner{max-width:860px;margin:4rem auto 0;}
+.contact-top{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.contact-info-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:1rem;}
+.contact-info-title em{color:var(--gold);font-style:italic;}
+.contact-text{font-size:0.88rem;color:var(--muted);line-height:1.85;margin-bottom:2rem;}
+.contact-items{display:flex;flex-direction:column;gap:1rem;}
+.contact-item{display:flex;align-items:center;gap:1rem;background:var(--card);border:1px solid var(--border2);border-radius:0.6rem;padding:1rem 1.3rem;transition:all var(--tr);}
+.contact-item:hover{border-color:var(--border);background:rgba(255,255,255,0.04);}
+.ci-icon{width:38px;height:38px;flex-shrink:0;background:linear-gradient(135deg,rgba(11,143,136,0.15),rgba(201,169,110,0.08));border-radius:0.4rem;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.ci-label{font-size:0.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
+.ci-value{font-size:0.86rem;color:var(--white);margin-top:1px;}
+.contact-form{display:flex;flex-direction:column;gap:1rem;}
+.form-group{display:flex;flex-direction:column;gap:0.4rem;}
+.form-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;}
+.form-input,.form-textarea{background:var(--card);border:1px solid var(--border2);border-radius:0.5rem;padding:0.85rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:300;transition:border-color var(--tr);outline:none;resize:none;}
+.form-input:focus,.form-textarea:focus{border-color:rgba(20,184,174,0.5);}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--muted);}
+.form-textarea{min-height:110px;}
+.form-btn{background:linear-gradient(135deg,var(--teal),var(--teal-lt));color:#fff;padding:0.9rem 2rem;border-radius:0.5rem;font-size:0.84rem;font-weight:500;letter-spacing:0.06em;border:none;cursor:pointer;transition:all var(--tr);font-family:'DM Sans',sans-serif;text-align:center;display:block;}
+.form-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(11,143,136,0.4);}
+
+/* FOOTER */
+footer{padding:2.5rem 5%;border-top:1px solid var(--border2);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:2rem;}
+.footer-left{font-size:0.78rem;color:var(--muted);}
+.footer-left strong{color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:0.9rem;font-weight:400;}
+.footer-center{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--gold);letter-spacing:0.05em;text-align:center;}
+.footer-right{text-align:right;font-size:0.78rem;color:var(--muted);}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.75s ease,transform 0.75s ease;}
+.reveal.vis{opacity:1;transform:translateY(0);}
+.reveal-l{opacity:0;transform:translateX(-32px);transition:opacity 0.75s ease,transform 0.75s ease;}
+.reveal-l.vis{opacity:1;transform:translateX(0);}
+.reveal-r{opacity:0;transform:translateX(32px);transition:opacity 0.75s ease,transform 0.75s ease;}
+.reveal-r.vis{opacity:1;transform:translateX(0);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ═══════════════════════════════════════
+   ADMIN PANEL
+═══════════════════════════════════════ */
+/* Login overlay */
+.adm-login-overlay{position:fixed;inset:0;background:rgba(4,8,16,0.97);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+.adm-login-overlay.hidden{display:none;}
+.adm-login-box{background:var(--adm-card);border:1px solid var(--adm-border);border-radius:1.2rem;padding:2.5rem;width:360px;text-align:center;}
+.adm-login-logo{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--adm-gold);margin-bottom:0.4rem;}
+.adm-login-sub{font-size:0.75rem;color:#4b5563;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:2rem;}
+.adm-login-box input{width:100%;background:#0d1428;border:1px solid var(--adm-border);border-radius:0.5rem;padding:0.85rem 1rem;color:#e5e7eb;font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;margin-bottom:0.8rem;transition:border-color 0.2s;}
+.adm-login-box input:focus{border-color:var(--adm-accent);}
+.adm-login-btn{width:100%;background:linear-gradient(135deg,var(--teal),var(--teal-lt));color:#fff;padding:0.9rem;border:none;border-radius:0.5rem;font-size:0.9rem;font-weight:600;cursor:pointer;letter-spacing:0.05em;transition:all 0.3s;font-family:'DM Sans',sans-serif;}
+.adm-login-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(20,184,174,0.4);}
+.adm-login-err{color:#ef4444;font-size:0.78rem;margin-top:0.6rem;min-height:1.2em;}
+
+/* Admin panel */
+.adm-panel{position:fixed;inset:0;z-index:9000;display:flex;font-family:'DM Sans',sans-serif;}
+.adm-panel.hidden{display:none;}
+
+/* Sidebar */
+.adm-sidebar{width:240px;background:var(--adm-side);border-right:1px solid var(--adm-border);display:flex;flex-direction:column;flex-shrink:0;}
+.adm-sidebar-head{padding:1.5rem 1.2rem 1rem;border-bottom:1px solid var(--adm-border);}
+.adm-sidebar-logo{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--adm-gold);letter-spacing:0.04em;}
+.adm-sidebar-role{font-size:0.68rem;color:#4b5563;text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;}
+.adm-nav{padding:1rem 0;flex:1;overflow-y:auto;}
+.adm-nav-section{font-size:0.62rem;color:#374151;text-transform:uppercase;letter-spacing:0.15em;padding:0.6rem 1.2rem 0.3rem;}
+.adm-nav-item{display:flex;align-items:center;gap:0.7rem;padding:0.65rem 1.2rem;cursor:pointer;color:#6b7280;font-size:0.82rem;transition:all 0.2s;border-left:2px solid transparent;}
+.adm-nav-item:hover{color:#e5e7eb;background:rgba(255,255,255,0.03);}
+.adm-nav-item.active{color:var(--adm-accent);background:rgba(20,184,174,0.06);border-left-color:var(--adm-accent);}
+.adm-nav-item .adm-icon{font-size:1rem;width:18px;text-align:center;}
+.adm-sidebar-foot{padding:1rem 1.2rem;border-top:1px solid var(--adm-border);}
+.adm-logout-btn{width:100%;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#ef4444;padding:0.6rem;border-radius:0.4rem;font-size:0.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;letter-spacing:0.05em;}
+.adm-logout-btn:hover{background:rgba(239,68,68,0.15);}
+
+/* Main area */
+.adm-main{flex:1;overflow-y:auto;background:var(--adm-bg);}
+.adm-topbar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid var(--adm-border);position:sticky;top:0;background:var(--adm-bg);z-index:10;}
+.adm-page-title{font-size:1.1rem;font-weight:500;color:#e5e7eb;}
+.adm-add-btn{background:linear-gradient(135deg,var(--teal),var(--teal-lt));color:#fff;padding:0.55rem 1.3rem;border:none;border-radius:0.4rem;font-size:0.8rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.04em;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem;}
+.adm-add-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(20,184,174,0.35);}
+.adm-content{padding:1.5rem 2rem;}
+
+/* Stats row */
+.adm-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.adm-stat-card{background:var(--adm-card);border:1px solid var(--adm-border);border-radius:0.75rem;padding:1.2rem 1.4rem;}
+.adm-stat-label{font-size:0.68rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;}
+.adm-stat-num{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--adm-gold);line-height:1;}
+.adm-stat-sub{font-size:0.72rem;color:#374151;margin-top:3px;}
+
+/* Table */
+.adm-table-wrap{background:var(--adm-card);border:1px solid var(--adm-border);border-radius:0.75rem;overflow:hidden;}
+.adm-table-head{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.4rem;border-bottom:1px solid var(--adm-border);}
+.adm-table-title{font-size:0.85rem;font-weight:500;color:#e5e7eb;}
+.adm-search{background:#0d1428;border:1px solid var(--adm-border);border-radius:0.4rem;padding:0.45rem 0.8rem;color:#e5e7eb;font-size:0.8rem;outline:none;font-family:'DM Sans',sans-serif;width:200px;transition:border-color 0.2s;}
+.adm-search:focus{border-color:var(--adm-accent);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:0.68rem;color:#4b5563;text-transform:uppercase;letter-spacing:0.1em;padding:0.8rem 1.4rem;text-align:left;border-bottom:1px solid var(--adm-border);background:rgba(0,0,0,0.15);}
+td{font-size:0.82rem;color:#9ca3af;padding:0.8rem 1.4rem;border-bottom:1px solid rgba(30,45,69,0.5);vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.015);color:#e5e7eb;}
+.adm-badge{display:inline-block;font-size:0.65rem;padding:0.2rem 0.6rem;border-radius:1rem;text-transform:uppercase;letter-spacing:0.08em;}
+.adm-badge-green{background:rgba(34,197,94,0.1);color:#22c55e;border:1px solid rgba(34,197,94,0.2);}
+.adm-badge-gold{background:rgba(201,169,110,0.1);color:var(--adm-gold);border:1px solid rgba(201,169,110,0.2);}
+.adm-badge-blue{background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);}
+.adm-actions{display:flex;gap:0.4rem;}
+.adm-btn-edit{background:rgba(20,184,174,0.1);border:1px solid rgba(20,184,174,0.2);color:var(--adm-accent);padding:0.3rem 0.7rem;border-radius:0.3rem;font-size:0.72rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+.adm-btn-edit:hover{background:rgba(20,184,174,0.2);}
+.adm-btn-del{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#ef4444;padding:0.3rem 0.7rem;border-radius:0.3rem;font-size:0.72rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+.adm-btn-del:hover{background:rgba(239,68,68,0.18);}
+
+/* Modal */
+.adm-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10001;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.adm-modal-overlay.hidden{display:none;}
+.adm-modal{background:var(--adm-card);border:1px solid var(--adm-border);border-radius:1rem;padding:2rem;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;}
+.adm-modal-title{font-size:1.1rem;font-weight:600;color:#e5e7eb;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;}
+.adm-modal-close{background:none;border:none;color:#6b7280;font-size:1.3rem;cursor:pointer;padding:0.2rem 0.4rem;transition:color 0.2s;}
+.adm-modal-close:hover{color:#e5e7eb;}
+.adm-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
+.adm-form-grid.full{grid-template-columns:1fr;}
+.adm-field{display:flex;flex-direction:column;gap:0.35rem;}
+.adm-field.span2{grid-column:span 2;}
+.adm-field label{font-size:0.68rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.1em;}
+.adm-field input,.adm-field textarea,.adm-field select{background:#0d1428;border:1px solid var(--adm-border);border-radius:0.4rem;padding:0.7rem 0.85rem;color:#e5e7eb;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;resize:vertical;transition:border-color 0.2s;}
+.adm-field input:focus,.adm-field textarea:focus,.adm-field select:focus{border-color:var(--adm-accent);}
+.adm-field select option{background:#0d1428;}
+.adm-modal-actions{display:flex;gap:0.7rem;justify-content:flex-end;margin-top:1.5rem;}
+.adm-save-btn{background:linear-gradient(135deg,var(--teal),var(--teal-lt));color:#fff;padding:0.7rem 1.8rem;border:none;border-radius:0.4rem;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+.adm-save-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(20,184,174,0.35);}
+.adm-cancel-btn{background:rgba(255,255,255,0.04);border:1px solid var(--adm-border);color:#9ca3af;padding:0.7rem 1.4rem;border-radius:0.4rem;font-size:0.85rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+.adm-cancel-btn:hover{border-color:#6b7280;color:#e5e7eb;}
+
+/* Toast */
+.adm-toast{position:fixed;bottom:2rem;right:2rem;background:#111827;border:1px solid var(--adm-border);border-radius:0.6rem;padding:0.85rem 1.4rem;font-size:0.82rem;color:#e5e7eb;z-index:20000;transform:translateY(80px);opacity:0;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;align-items:center;gap:0.6rem;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
+.adm-toast.show{transform:translateY(0);opacity:1;}
+.adm-toast.success{border-color:rgba(34,197,94,0.3);}
+.adm-toast.error{border-color:rgba(239,68,68,0.3);}
+.adm-toast-icon{font-size:1rem;}
+
+/* Tab pages inside admin */
+.adm-page{display:none;}
+.adm-page.active{display:block;}
+
+/* Profile page */
+.adm-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.adm-profile-card{background:var(--adm-card);border:1px solid var(--adm-border);border-radius:0.75rem;padding:1.4rem;}
+.adm-profile-card h3{font-size:0.85rem;color:#e5e7eb;font-weight:600;margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(--adm-border);}
+.adm-kv{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid rgba(30,45,69,0.4);}
+.adm-kv:last-child{border-bottom:none;}
+.adm-kv-key{font-size:0.72rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;}
+.adm-kv-val{font-size:0.82rem;color:#9ca3af;}
+.adm-edit-profile-btn{margin-top:1rem;width:100%;background:rgba(20,184,174,0.08);border:1px solid rgba(20,184,174,0.2);color:var(--adm-accent);padding:0.6rem;border-radius:0.4rem;font-size:0.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;letter-spacing:0.04em;}
+.adm-edit-profile-btn:hover{background:rgba(20,184,174,0.16);}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media(max-width:1024px){.expertise-grid{grid-template-columns:repeat(2,1fr);}.creds-grid{grid-template-columns:repeat(2,1fr);}.adm-stats-row{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:860px){
+  .hero-inner{grid-template-columns:1fr;gap:5rem;}
+  .hero-visual{min-height:420px;}
+  .fp1{right:-44px;}.fp2{left:-44px;}.fp3{right:-36px;}.fp4{left:-60px;}
+  .about-grid{grid-template-columns:1fr;gap:3rem;}
+  .timeline-wrap{grid-template-columns:1fr;gap:2rem;}
+  .contact-top{grid-template-columns:1fr;gap:2.5rem;}
+  footer{grid-template-columns:1fr;text-align:center;gap:0.5rem;}
+  .footer-right{text-align:center;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .adm-sidebar{width:200px;}
+  .adm-profile-grid{grid-template-columns:1fr;}
+}
+@media(max-width:640px){
+  section{padding:80px 5%;}
+  .expertise-grid{grid-template-columns:1fr;}
+  .creds-grid{grid-template-columns:1fr;}
+  .hero-stats{flex-wrap:wrap;gap:0;}
+  .hero-stat{flex:0 0 50%;padding:1rem 0;border-right:none;border-bottom:1px solid var(--border);margin-right:0;}
+  .hero-stat:nth-child(odd){padding-right:1rem;border-right:1px solid var(--border);}
+  .avatar-wrap{width:260px;height:260px;}
+  .fp1,.fp2,.fp3,.fp4{display:none;}
+  .ring-outer{inset:-18px;}.ring-mid{inset:-9px;}
+  .adm-panel{flex-direction:column;}
+  .adm-sidebar{width:100%;height:auto;flex-direction:row;overflow-x:auto;}
+  .adm-stats-row{grid-template-columns:1fr 1fr;}
+  .adm-form-grid{grid-template-columns:1fr;}
+  .adm-field.span2{grid-column:span 1;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ═══════════ ADMIN LOGIN ═══════════ -->
+<div class="adm-login-overlay hidden" id="admLoginOverlay">
+  <div class="adm-login-box">
+    <div class="adm-login-logo">E. Abakah</div>
+    <div class="adm-login-sub">Admin Panel · Secure Access</div>
+    <input type="text" id="admUser" placeholder="Username" autocomplete="off">
+    <input type="password" id="admPass" placeholder="Password">
+    <button class="adm-login-btn" onclick="admLogin()">Sign In →</button>
+    <div class="adm-login-err" id="admLoginErr"></div>
+  </div>
+</div>
+
+<!-- ═══════════ ADMIN PANEL ═══════════ -->
+<div class="adm-panel hidden" id="admPanel">
+  <!-- Sidebar -->
+  <div class="adm-sidebar">
+    <div class="adm-sidebar-head">
+      <div class="adm-sidebar-logo">⚕ Admin</div>
+      <div class="adm-sidebar-role">Portfolio Manager</div>
+    </div>
+    <nav class="adm-nav">
+      <div class="adm-nav-section">Overview</div>
+      <div class="adm-nav-item active" onclick="admGo('dashboard')"><span class="adm-icon">📊</span>Dashboard</div>
+      <div class="adm-nav-section">Content</div>
+      <div class="adm-nav-item" onclick="admGo('profile')"><span class="adm-icon">👤</span>Profile</div>
+      <div class="adm-nav-item" onclick="admGo('skills')"><span class="adm-icon">🏷️</span>Skills</div>
+      <div class="adm-nav-item" onclick="admGo('expertise')"><span class="adm-icon">🔬</span>Expertise</div>
+      <div class="adm-nav-item" onclick="admGo('experience')"><span class="adm-icon">💼</span>Experience</div>
+      <div class="adm-nav-item" onclick="admGo('education')"><span class="adm-icon">🎓</span>Education</div>
+      <div class="adm-nav-item" onclick="admGo('credentials')"><span class="adm-icon">📜</span>Credentials</div>
+      <div class="adm-nav-item" onclick="admGo('contact')"><span class="adm-icon">📞</span>Contact Info</div>
+      <div class="adm-nav-section">Site</div>
+      <div class="adm-nav-item" onclick="admGo('stats')"><span class="adm-icon">📈</span>Hero Stats</div>
+      <div class="adm-nav-item" onclick="admGo('photo')"><span class="adm-icon">📷</span>Profile Photo</div>
+      <div class="adm-nav-item" onclick="closeAdmin()"><span class="adm-icon">🌐</span>View Site</div>
+    </nav>
+    <div class="adm-sidebar-foot">
+      <button class="adm-logout-btn" onclick="admLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="adm-main">
+    <div class="adm-topbar">
+      <div class="adm-page-title" id="admPageTitle">Dashboard</div>
+      <button class="adm-add-btn hidden" id="admAddBtn" onclick="openAddModal()">+ Add New</button>
+    </div>
+    <div class="adm-content">
+
+      <!-- DASHBOARD -->
+      <div class="adm-page active" id="adm-dashboard">
+        <div class="adm-stats-row" id="dashStatsRow"></div>
+        <div class="adm-table-wrap">
+          <div class="adm-table-head"><div class="adm-table-title">Recent Activity</div></div>
+          <table><thead><tr><th>Section</th><th>Items</th><th>Last Updated</th><th>Status</th></tr></thead>
+          <tbody id="dashActivity"></tbody></table>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="adm-page" id="adm-profile">
+        <div class="adm-profile-grid" id="profileGrid"></div>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="adm-page" id="adm-skills">
+        <div class="adm-table-wrap">
+          <div class="adm-table-head">
+            <div class="adm-table-title">Skills & Tags</div>
+            <input class="adm-search" placeholder="Search skills…" oninput="filterTable('skillsTbody',this.value)">
+          </div>
+          <table><thead><tr><th>#</th><th>Skill Name</th><th>Category</th><th>Actions</th></tr></thead>
+          <tbody id="skillsTbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- EXPERTISE -->
+      <div class="adm-page" id="adm-expertise">
+        <div class="adm-table-wrap">
+          <div class="adm-table-head">
+            <div class="adm-table-title">Clinical Expertise Cards</div>
+            <input class="adm-search" placeholder="Search…" oninput="filterTable('expertiseTbody',this.value)">
+          </div>
+          <table><thead><tr><th>#</th><th>Icon</th><th>Title</th><th>Description</th><th>Actions</th></tr></thead>
+          <tbody id="expertiseTbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- EXPERIENCE -->
+      <div class="adm-page" id="adm-experience">
+        <div class="adm-table-wrap">
+          <div class="adm-table-head">
+            <div class="adm-table-title">Work Experience</div>
+            <input class="adm-search" placeholder="Search…" oninput="filterTable('experienceTbody',this.value)">
+          </div>
+          <table><thead><tr><th>#</th><th>Period</th><th>Role</th><th>Organisation</th><th>Actions</th></tr></thead>
+          <tbody id="experienceTbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- EDUCATION -->
+      <div class="adm-page" id="adm-education">
+        <div class="adm-table-wrap">
+          <div class="adm-table-head">
+            <div class="adm-table-title">Education History</div>
+            <input class="adm-search" placeholder="Search…" oninput="filterTable('educationTbody',this.value)">
+          </div>
+          <table><thead><tr><th>#</th><th>Period</th><th>Qualification</th><th>Institution</th><th>Actions</th></tr></thead>
+          <tbody id="educationTbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- CREDENTIALS -->
+      <div class="adm-page" id="adm-credentials">
+        <div class="adm-table-wrap">
+          <div class="adm-table-head">
+            <div class="adm-table-title">Licenses & Credentials</div>
+            <input class="adm-search" placeholder="Search…" oninput="filterTable('credentialsTbody',this.value)">
+          </div>
+          <table><thead><tr><th>#</th><th>Icon</th><th>Title</th><th>Organisation</th><th>Badge</th><th>Actions</th></tr></thead>
+          <tbody id="credentialsTbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="adm-page" id="adm-contact">
+        <div class="adm-table-wrap">
+          <div class="adm-table-head">
+            <div class="adm-table-title">Contact Information</div>
+          </div>
+          <table><thead><tr><th>Field</th><th>Icon</th><th>Label</th><th>Value</th><th>Actions</th></tr></thead>
+          <tbody id="contactTbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- HERO STATS -->
+      <div class="adm-page" id="adm-stats">
+        <div class="adm-table-wrap">
+          <div class="adm-table-head"><div class="adm-table-title">Hero Stats (displayed on homepage)</div></div>
+          <table><thead><tr><th>#</th><th>Number/Text</th><th>Label</th><th>Actions</th></tr></thead>
+          <tbody id="statsTbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- PROFILE PHOTO -->
+      <div class="adm-page" id="adm-photo">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;max-width:860px;">
+          <!-- Preview -->
+          <div class="adm-profile-card" style="background:var(--adm-card);border:1px solid var(--adm-border);border-radius:0.75rem;padding:1.8rem;display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
+            <h3 style="font-size:0.85rem;color:#e5e7eb;font-weight:600;width:100%;padding-bottom:0.6rem;border-bottom:1px solid var(--adm-border);">Current Photo Preview</h3>
+            <div id="admPhotoPreview" style="width:180px;height:180px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 35% 35%,#0f1d35,#0b1526);border:2px solid var(--adm-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-family:'Cormorant Garamond',serif;font-size:4rem;color:#c9a96e;opacity:0.7;" id="admPhotoInitials">EA</span>
+            </div>
+            <div id="admPhotoStatus" style="font-size:0.75rem;color:#6b7280;text-align:center;">No photo uploaded yet</div>
+            <button id="admRemovePhotoBtn" onclick="removePhoto()" style="display:none;width:100%;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#ef4444;padding:0.6rem;border-radius:0.4rem;font-size:0.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;">🗑 Remove Photo</button>
+          </div>
+          <!-- Upload -->
+          <div style="background:var(--adm-card);border:1px solid var(--adm-border);border-radius:0.75rem;padding:1.8rem;display:flex;flex-direction:column;gap:1rem;">
+            <h3 style="font-size:0.85rem;color:#e5e7eb;font-weight:600;padding-bottom:0.6rem;border-bottom:1px solid var(--adm-border);">Upload New Photo</h3>
+            <p style="font-size:0.78rem;color:#6b7280;line-height:1.7;">Upload a professional photo to display on your portfolio hero section. The photo will appear inside the decorated circular frame with all animations.</p>
+            <div id="admDropZone" style="border:2px dashed rgba(20,184,174,0.3);border-radius:0.75rem;padding:2.5rem 1.5rem;text-align:center;cursor:pointer;transition:all 0.25s;background:rgba(20,184,174,0.03);" onclick="document.getElementById('admPhotoInput').click()" ondragover="admDragOver(event)" ondrop="admDrop(event)" ondragleave="admDragLeave(event)">
+              <div style="font-size:2.5rem;margin-bottom:0.8rem;">📷</div>
+              <div style="font-size:0.85rem;color:#9ca3af;margin-bottom:0.4rem;">Click to browse or drag & drop</div>
+              <div style="font-size:0.72rem;color:#4b5563;">JPG, PNG, WEBP — recommended 500×500px or larger</div>
+            </div>
+            <input type="file" id="admPhotoInput" accept="image/*" style="display:none" onchange="handleAdmPhoto(this)">
+            <div style="background:rgba(201,169,110,0.05);border:1px solid rgba(201,169,110,0.15);border-radius:0.5rem;padding:0.9rem 1rem;">
+              <div style="font-size:0.68rem;color:#c9a96e;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">💡 Tips for best results</div>
+              <ul style="font-size:0.76rem;color:#6b7280;line-height:1.8;padding-left:1rem;">
+                <li>Use a clear, well-lit professional headshot</li>
+                <li>Square or portrait orientation works best</li>
+                <li>Plain or simple background recommended</li>
+                <li>Face centred for best circular crop</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /adm-content -->
+  </div><!-- /adm-main -->
+</div><!-- /adm-panel -->
+
+<!-- CRUD MODAL -->
+<div class="adm-modal-overlay hidden" id="admModal">
+  <div class="adm-modal">
+    <div class="adm-modal-title">
+      <span id="modalTitle">Add Item</span>
+      <button class="adm-modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalBody"></div>
+    <div class="adm-modal-actions">
+      <button class="adm-cancel-btn" onclick="closeModal()">Cancel</button>
+      <button class="adm-save-btn" onclick="saveModal()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="adm-toast" id="admToast"><span class="adm-toast-icon">✅</span><span id="admToastMsg"></span></div>
+
+<!-- ═══════════ PUBLIC SITE ═══════════ -->
+<div id="publicSite">
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo"><span class="nav-logo-dot"></span>E. Abakah</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#expertise">Expertise</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#credentials">Credentials</a></li>
+    <li><a href="#contact" class="nav-cta">Contact Me</a></li>
+    <li><a onclick="openAdminLogin()" class="nav-admin-btn" style="cursor:pointer">🔐 Admin</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="closeMenu()">About</a>
+  <a href="#expertise" onclick="closeMenu()">Expertise</a>
+  <a href="#experience" onclick="closeMenu()">Experience</a>
+  <a href="#credentials" onclick="closeMenu()">Credentials</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+  <a onclick="openAdminLogin();closeMenu();" style="cursor:pointer;color:var(--gold)">🔐 Admin Panel</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-orb orb1"></div><div class="hero-orb orb2"></div><div class="hero-orb orb3"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge"><span class="badge-ping"></span>Registered Sonographer &middot; AHPC Ghana</div>
+      <h1 class="hero-name"><span class="first" id="heroFirst">Emmanuel</span><span class="last" id="heroLast">Abakah</span></h1>
+      <div class="hero-divider"></div>
+      <p class="hero-role" id="heroRole">Medical Sonographer &amp; Hospital Administrator</p>
+      <p class="hero-desc" id="heroDesc">B.Sc. Diagnostic Medical Sonography professional serving a dual role at <strong style="color:var(--white)">Soloboat (SB) Hospital</strong>, Central Region. Provisionally registered with the Allied Health Professions Council of Ghana.</p>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn-primary">Get In Touch &rarr;</a>
+        <a href="#credentials" class="btn-secondary">View Credentials</a>
+      </div>
+      <div class="hero-stats" id="heroStatsRow"></div>
+    </div>
+    <div class="hero-visual">
+      <div class="avatar-wrap">
+        <div class="avatar-aura"></div>
+        <div class="ring-outer"></div><div class="ring-mid"></div>
+        <div class="particles">
+          <div class="particle p1"></div><div class="particle p2"></div><div class="particle p3"></div>
+          <div class="particle p4"></div><div class="particle p5"></div><div class="particle p6"></div>
+          <div class="particle p7"></div><div class="particle p8"></div><div class="particle p9"></div>
+          <div class="particle p10"></div><div class="particle p11"></div><div class="particle p12"></div>
+        </div>
+        <div class="avatar-core" id="avatarCore">
+          <div class="avatar-placeholder" id="avatarPlaceholder">
+            <span class="avatar-initials">EA</span>
+            <span class="avatar-hint">Your Photo Here</span>
+          </div>
+          <div class="avatar-shimmer"></div>
+        </div>
+        <div class="geo-corner gc-tl"></div><div class="geo-corner gc-tr"></div>
+        <div class="geo-corner gc-bl"></div><div class="geo-corner gc-br"></div>
+        <div class="float-pill fp1"><div class="fp-icon">🏥</div><div class="fp-label">Workplace</div><div class="fp-value">SB Hospital</div></div>
+        <div class="float-pill fp2"><div class="fp-icon">📜</div><div class="fp-label">AHPC Reg. No.</div><div class="fp-value gold">0022395</div></div>
+        <div class="float-pill fp3"><div class="fp-icon">🎓</div><div class="fp-label">Degree</div><div class="fp-value">B.Sc. Sonography</div></div>
+        <div class="float-pill fp4"><div class="fp-icon">✅</div><div class="fp-label">NSS Status</div><div class="fp-value">Completed</div></div>
+      </div>
+      <label class="photo-upload-btn" for="photoInput" style="display:none"></label>
+      <input type="file" id="photoInput" accept="image/*">
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="reveal"><div class="sec-eyebrow">Who I Am</div><h2 class="sec-title">About <em>Emmanuel</em></h2></div>
+    <div class="about-grid">
+      <div class="reveal-l">
+        <div class="info-table" id="profileInfoTable"></div>
+        <div class="skills-wrap"><div class="skills-title">Core Skills</div><div class="skill-tags" id="skillTagsRender"></div></div>
+        <div class="hobbies-row" id="hobbiesRender"></div>
+      </div>
+      <div class="reveal-r">
+        <div class="about-text" id="aboutTextRender"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- EXPERTISE -->
+<section id="expertise" class="alt">
+  <div class="container">
+    <div class="reveal"><div class="sec-eyebrow">What I Do</div><h2 class="sec-title">Clinical <em>Expertise</em></h2><p class="sec-subtitle">Combining precision diagnostic imaging with efficient hospital administration to deliver holistic healthcare excellence.</p></div>
+    <div class="expertise-grid" id="expertiseGrid"></div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <div class="reveal"><div class="sec-eyebrow">Career Journey</div><h2 class="sec-title">Experience &amp; <em>Education</em></h2></div>
+    <div class="timeline-wrap">
+      <div class="reveal-l">
+        <div class="timeline-col-label">Work Experience</div>
+        <div class="timeline" id="experienceTimeline"></div>
+      </div>
+      <div class="reveal-r">
+        <div class="timeline-col-label">Education</div>
+        <div class="timeline" id="educationTimeline"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- CREDENTIALS -->
+<section id="credentials" class="alt">
+  <div class="container">
+    <div class="reveal"><div class="sec-eyebrow">Qualifications</div><h2 class="sec-title">Licenses &amp; <em>Credentials</em></h2><p class="sec-subtitle">Fully credentialed and registered with the Allied Health Professions Council of Ghana.</p></div>
+    <div class="creds-grid" id="credsGrid"></div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="reveal" style="text-align:center;max-width:600px;margin:0 auto;">
+      <div class="sec-eyebrow" style="justify-content:center">Get In Touch</div>
+      <h2 class="sec-title">Let's <em>Connect</em></h2>
+      <p class="sec-subtitle" style="margin:0 auto">Open to employment opportunities, clinical partnerships, and collaborative healthcare roles across Ghana and beyond.</p>
+    </div>
+    <div class="contact-inner">
+      <div class="contact-top">
+        <div class="reveal-l">
+          <h3 class="contact-info-title">Reach out <em>directly</em></h3>
+          <p class="contact-text">Whether you're looking for a skilled sonographer, an experienced administrator, or both — I'd love to hear from you.</p>
+          <div class="contact-items" id="contactItemsRender"></div>
+        </div>
+        <div class="reveal-r">
+          <h3 class="contact-info-title">Send a <em>message</em></h3>
+          <div class="contact-form">
+            <div class="form-group"><label class="form-label">Your Name</label><input type="text" class="form-input" placeholder="Dr. Jane Smith"></div>
+            <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" placeholder="you@hospital.com"></div>
+            <div class="form-group"><label class="form-label">Subject</label><input type="text" class="form-input" placeholder="Employment Opportunity"></div>
+            <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="I'd like to discuss..."></textarea></div>
+            <a id="contactEmailLink" href="mailto:emmanuel.abakah.1806@gmail.com" class="form-btn">Send Message &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-left">© 2024 <strong>Emmanuel Abakah</strong><br>All rights reserved.</div>
+  <div class="footer-center">E. Abakah</div>
+  <div class="footer-right">AHPC Reg. No: 0022395<br>Soloboat (SB) Hospital · Ghana</div>
+</footer>
+
+</div><!-- /publicSite -->
+
+<script>
+/* ════════════════════════════════════════
+   DATA STORE
+════════════════════════════════════════ */
+const DB = {
+  profile: {
+    firstName:'Emmanuel', lastName:'Abakah',
+    dob:'7th August, 1996', pob:'Mankessim',
+    nationality:'Ghanaian', religion:'Christian',
+    marital:'Single', phone:'0245 870 387',
+    email:'emmanuel.abakah.1806@gmail.com',
+    role:'Medical Sonographer & Hospital Administrator',
+    bio1:'I am a dedicated and results-oriented <strong>Diagnostic Medical Sonographer and Hospital Administrator</strong>, currently serving in a dual capacity at <strong>Soloboat (SB) Hospital</strong> in Assin Fosu, Central Region of Ghana.',
+    bio2:'I hold a <strong>B.Sc. in Diagnostic Medical Sonography</strong> from Klintaps University College, affiliated with the University of Cape Coast — a rigorous four-year programme covering diagnostic imaging science, clinical sonography practice, anatomy, and patient management.',
+    bio3:'As a <strong>provisionally registered Sonographer</strong> with the Allied Health Professions Council (AHPC) of Ghana (Reg. No: 0022395), I perform a wide range of ultrasound examinations while also overseeing day-to-day administrative operations.',
+    bio4:'I pride myself on <strong>attention to detail, adaptability</strong>, and a genuine drive to keep learning. I work effectively both independently and as part of a multidisciplinary healthcare team.',
+    bio5:'Outside the clinic, I am passionate about music — I play the acoustic guitar and have served as a music teacher at the Ebenezer Methodist Regimental Band in Mankessim.'
+  },
+  skills:[
+    {id:1,name:'Abdominal Ultrasound',category:'Clinical'},
+    {id:2,name:'Obstetrics & Gynaecology',category:'Clinical'},
+    {id:3,name:'Vascular Imaging',category:'Clinical'},
+    {id:4,name:'Small Parts',category:'Clinical'},
+    {id:5,name:'Hospital Administration',category:'Management'},
+    {id:6,name:'Records Management',category:'Management'},
+    {id:7,name:'MS Word & Excel',category:'IT'},
+    {id:8,name:'Team Leadership',category:'Soft Skills'}
+  ],
+  expertise:[
+    {id:1,icon:'🔬',title:'Abdominal Ultrasound',desc:'Comprehensive abdominal sonographic examinations covering liver, gallbladder, spleen, kidneys, pancreas, and bladder assessments.'},
+    {id:2,icon:'🤰',title:'Obstetrics & Gynaecology',desc:'First, second, and third trimester obstetric scans, gynaecological examinations including follicular studies and uterine assessments.'},
+    {id:3,icon:'🩺',title:'Vascular & Special Procedures',desc:'Vascular sonography and special ultrasound procedures requiring precise imaging technique and clinical judgement.'},
+    {id:4,icon:'🔭',title:'Small Parts Imaging',desc:'High-frequency imaging of small anatomical structures including thyroid, scrotal, breast, and musculoskeletal soft tissue.'},
+    {id:5,icon:'🗂️',title:'Hospital Administration',desc:'Overseeing scheduling, patient records management, regulatory compliance, staff coordination at SB Hospital.'},
+    {id:6,icon:'🤝',title:'Patient Care & Relations',desc:'Considerable practical experience in compassionate patient communication and exceptional care in clinical environments.'}
+  ],
+  experience:[
+    {id:1,period:'Present',role:'Medical Sonographer & Administrator',org:'Soloboat (SB) Hospital · Assin Fosu, Central Region',desc:'Performs full-range diagnostic ultrasound examinations daily\nOversees hospital administrative operations & workflow\nManages patient scheduling, records & compliance\nServes as key liaison between clinical staff & management'},
+    {id:2,period:'2023 – 2024',role:'National Service Personnel — Sonographer',org:'St. Francis Xavier Hospital · Central Region',desc:'Conducted diagnostic ultrasound across multiple modalities\nCollaborated with physicians & radiologists\nNSS Number: NSSAHC7423523'},
+    {id:3,period:'2021',role:'Clinical Practical Training',org:'Soloboat Medical Diagnostic Centre · Assin Fosu',desc:'Observation and practical training covering abdominal, OBG, vascular & small parts imaging.'},
+    {id:4,period:'Ongoing',role:'Music Teacher — Regimental Band',org:'Ebenezer Methodist Regimental Band · Mankessim',desc:'Teaches children to play musical instruments\nAssists in reading & understanding music'}
+  ],
+  education:[
+    {id:1,period:'2020 – 2024',qualification:'B.Sc. Diagnostic Medical Sonography',institution:'Klintaps University College · Tema (Cert. by UCC)',desc:'Four-year programme. Admission No: 2020089 · ID: KUC/DMS/19/0076'},
+    {id:2,period:'2013 – 2016',qualification:'WASSCE — Secondary Education',institution:'Sammo Otto Senior High School · Cape Coast',desc:'Health Prefect (2015–2016)\nMember, Regimental Band (2013–2016)'},
+    {id:3,period:'2010 – 2011',qualification:'B.E.C.E — Basic Education Certificate',institution:'Wright Memorial School',desc:'Completed the Basic Education Certificate Examination.'}
+  ],
+  credentials:[
+    {id:1,icon:'📜',title:'Certificate of Provisional Registration — Sonographer',org:'Allied Health Professions Council (AHPC), Ghana',detail:'Reg. No: AHPC / 0022395\nPIN: 90072823\nValid: 01 Dec 2023 – 30 Nov 2024',badge:'Provisionally Registered',badgeType:'green'},
+    {id:2,icon:'🎓',title:'B.Sc. Diagnostic Medical Sonography',org:'Klintaps University College · Certified by UCC',detail:'Admission No: 2020089\nStudent ID: KUC/DMS/19/0076\n4-Year Bachelor\'s Programme',badge:'Degree',badgeType:'gold'},
+    {id:3,icon:'🏅',title:'Certificate of National Service',org:'Ghana National Service Scheme',detail:'NSS No: NSSAHC7423523\nPlace: St. Francis Xavier Hospital\nPeriod: 2023/2024',badge:'Completed',badgeType:'green'},
+    {id:4,icon:'🏫',title:'WASSCE Certificate',org:'Sammo Otto Senior High School · Cape Coast',detail:'Year: 2013–2016\nHealth Prefect (2015–2016)',badge:'Completed',badgeType:'green'},
+    {id:5,icon:'📋',title:'B.E.C.E — Basic Education Certificate',org:'Wright Memorial School',detail:'Year: 2010–2011',badge:'Completed',badgeType:'green'},
+    {id:6,icon:'🔬',title:'Letter of Introduction — Clinical Training',org:'Klintaps University College',detail:'Signed by: Douglas Frimpong-Nnuroh\nPlacement: Soloboat Medical Diagnostic Centre\nDate: June 1, 2021',badge:'Clinical',badgeType:'gold'}
+  ],
+  contact:[
+    {id:1,icon:'📞',label:'Phone',value:'0245 870 387'},
+    {id:2,icon:'✉️',label:'Email',value:'emmanuel.abakah.1806@gmail.com'},
+    {id:3,icon:'📍',label:'Location',value:'Mankessim, Central Region, Ghana'},
+    {id:4,icon:'🏥',label:'Current Workplace',value:'Soloboat (SB) Hospital, Assin Fosu'}
+  ],
+  heroStats:[
+    {id:1,num:'B.Sc.',label:'Degree'},
+    {id:2,num:'AHPC',label:'Registered'},
+    {id:3,num:'NSS',label:'Certified'},
+    {id:4,num:'2',label:'Roles @ SB'}
+  ]
+};
+
+let nextId = (arr) => (arr.length ? Math.max(...arr.map(x=>x.id))+1 : 1);
+let currentPage = 'dashboard';
+let editId = null;
+let editSection = null;
+
+/* ════════════════════════════════════════
+   RENDER PUBLIC SITE
+════════════════════════════════════════ */
+function renderAll() {
+  renderHeroStats();
+  renderProfile();
+  renderSkills();
+  renderExpertise();
+  renderExperience();
+  renderCredentials();
+  renderContact();
+}
+
+function renderHeroStats() {
+  document.getElementById('heroFirst').textContent = DB.profile.firstName;
+  document.getElementById('heroLast').textContent = DB.profile.lastName;
+  document.getElementById('heroRole').textContent = DB.profile.role;
+  const row = document.getElementById('heroStatsRow');
+  row.innerHTML = DB.heroStats.map(s=>`
+    <div class="hero-stat"><div class="hs-num">${s.num}</div><div class="hs-label">${s.label}</div></div>
+  `).join('');
+}
+
+function renderProfile() {
+  const p = DB.profile;
+  document.getElementById('profileInfoTable').innerHTML = `
+    <div class="info-row"><div class="info-cell"><div class="i-label">Full Name</div><div class="i-value">${p.firstName} ${p.lastName}</div></div><div class="info-cell"><div class="i-label">Date of Birth</div><div class="i-value">${p.dob}</div></div></div>
+    <div class="info-row"><div class="info-cell"><div class="i-label">Place of Birth</div><div class="i-value">${p.pob}</div></div><div class="info-cell"><div class="i-label">Nationality</div><div class="i-value">${p.nationality}</div></div></div>
+    <div class="info-row"><div class="info-cell"><div class="i-label">Religion</div><div class="i-value">${p.religion}</div></div><div class="info-cell"><div class="i-label">Marital Status</div><div class="i-value">${p.marital}</div></div></div>
+    <div class="info-row"><div class="info-cell"><div class="i-label">Phone</div><div class="i-value">${p.phone}</div></div><div class="info-cell"><div class="i-label">Email</div><div class="i-value" style="font-size:0.78rem">${p.email}</div></div></div>
+  `;
+  document.getElementById('aboutTextRender').innerHTML = [p.bio1,p.bio2,p.bio3,p.bio4,p.bio5].filter(Boolean).map(b=>`<p>${b}</p>`).join('');
+  const emailLink = document.getElementById('contactEmailLink');
+  if(emailLink) emailLink.href = `mailto:${p.email}`;
+}
+
+function renderSkills() {
+  document.getElementById('skillTagsRender').innerHTML = DB.skills.map(s=>`<span class="skill-tag">${s.name}</span>`).join('');
+  document.getElementById('hobbiesRender').innerHTML = `<div class="hobby-chip">🎸 Acoustic Guitar</div><div class="hobby-chip">🎼 Music Teaching</div><div class="hobby-chip">📖 Continuous Learning</div>`;
+}
+
+function renderExpertise() {
+  document.getElementById('expertiseGrid').innerHTML = DB.expertise.map(e=>`
+    <div class="exp-card reveal">
+      <div class="exp-icon-wrap">${e.icon}</div>
+      <div class="exp-title">${e.title}</div>
+      <div class="exp-desc">${e.desc}</div>
+    </div>
+  `).join('');
+  reObserve();
+}
+
+function renderExperience() {
+  document.getElementById('experienceTimeline').innerHTML = DB.experience.map(e=>`
+    <div class="tl-item">
+      <div class="tl-period">${e.period}</div>
+      <div class="tl-role">${e.role}</div>
+      <div class="tl-org">${e.org}</div>
+      <div class="tl-desc">${e.desc.includes('\n') ? '<ul>'+e.desc.split('\n').map(l=>`<li>${l}</li>`).join('')+'</ul>' : e.desc}</div>
+    </div>
+  `).join('');
+  document.getElementById('educationTimeline').innerHTML = DB.education.map(e=>`
+    <div class="tl-item">
+      <div class="tl-period">${e.period}</div>
+      <div class="tl-role">${e.qualification}</div>
+      <div class="tl-org">${e.institution}</div>
+      <div class="tl-desc">${e.desc.includes('\n') ? '<ul>'+e.desc.split('\n').map(l=>`<li>${l}</li>`).join('')+'</ul>' : e.desc}</div>
+    </div>
+  `).join('');
+  reObserve();
+}
+
+function renderCredentials() {
+  document.getElementById('credsGrid').innerHTML = DB.credentials.map(c=>`
+    <div class="cred-card reveal">
+      <div class="cred-icon-wrap">${c.icon}</div>
+      <div>
+        <div class="cred-title">${c.title}</div>
+        <div class="cred-org">${c.org}</div>
+        <div class="cred-detail">${c.detail.replace(/\n/g,'<br>')}</div>
+        <span class="cred-badge ${c.badgeType==='green'?'green':''}">${c.badge}</span>
+      </div>
+    </div>
+  `).join('');
+  reObserve();
+}
+
+function renderContact() {
+  document.getElementById('contactItemsRender').innerHTML = DB.contact.map(c=>`
+    <div class="contact-item">
+      <div class="ci-icon">${c.icon}</div>
+      <div><div class="ci-label">${c.label}</div><div class="ci-value">${c.value}</div></div>
+    </div>
+  `).join('');
+}
+
+/* ════════════════════════════════════════
+   ADMIN AUTH
+════════════════════════════════════════ */
+const ADM_USER = 'admin', ADM_PASS = 'ea2024';
+function openAdminLogin(){ document.getElementById('admLoginOverlay').classList.remove('hidden'); }
+function admLogin(){
+  const u=document.getElementById('admUser').value.trim();
+  const p=document.getElementById('admPass').value.trim();
+  if(u===ADM_USER && p===ADM_PASS){
+    document.getElementById('admLoginOverlay').classList.add('hidden');
+    document.getElementById('admPanel').classList.remove('hidden');
+    document.getElementById('publicSite').style.display='none';
+    admGo('dashboard');
+  } else {
+    document.getElementById('admLoginErr').textContent='Invalid username or password.';
+  }
+}
+function admLogout(){
+  document.getElementById('admPanel').classList.add('hidden');
+  document.getElementById('publicSite').style.display='';
+  document.getElementById('admUser').value='';
+  document.getElementById('admPass').value='';
+  document.getElementById('admLoginErr').textContent='';
+}
+function closeAdmin(){
+  document.getElementById('admPanel').classList.add('hidden');
+  document.getElementById('publicSite').style.display='';
+}
+document.getElementById('admLoginOverlay').addEventListener('keydown',e=>{ if(e.key==='Enter') admLogin(); });
+
+/* ════════════════════════════════════════
+   ADMIN NAV
+════════════════════════════════════════ */
+const pageTitles={dashboard:'Dashboard',profile:'Profile & Bio',skills:'Skills & Tags',expertise:'Clinical Expertise',experience:'Work Experience',education:'Education',credentials:'Credentials & Licenses',contact:'Contact Information',stats:'Hero Stats',photo:'Profile Photo'};
+const addablePages=['skills','expertise','experience','education','credentials','contact','stats'];
+
+function admGo(page){
+  currentPage=page;
+  document.querySelectorAll('.adm-nav-item').forEach(el=>el.classList.remove('active'));
+  const items=document.querySelectorAll('.adm-nav-item');
+  items.forEach(el=>{ if(el.textContent.trim().toLowerCase().includes(page.toLowerCase()||pageTitles[page]?.toLowerCase())) el.classList.add('active'); });
+  document.querySelectorAll('.adm-page').forEach(el=>el.classList.remove('active'));
+  const pg=document.getElementById('adm-'+page);
+  if(pg) pg.classList.add('active');
+  document.getElementById('admPageTitle').textContent = pageTitles[page]||page;
+  const addBtn=document.getElementById('admAddBtn');
+  if(addablePages.includes(page)){ addBtn.classList.remove('hidden'); } else { addBtn.classList.add('hidden'); }
+  renderAdminPage(page);
+}
+
+/* ════════════════════════════════════════
+   RENDER ADMIN PAGES
+════════════════════════════════════════ */
+function renderAdminPage(page){
+  if(page==='dashboard') renderDashboard();
+  else if(page==='profile') renderAdmProfile();
+  else if(page==='skills') renderAdmTable('skillsTbody', DB.skills, ['name','category'], ['Name','Category']);
+  else if(page==='expertise') renderAdmExpertise();
+  else if(page==='experience') renderAdmExperience();
+  else if(page==='education') renderAdmEducation();
+  else if(page==='credentials') renderAdmCredentials();
+  else if(page==='contact') renderAdmContact();
+  else if(page==='stats') renderAdmStats();
+  else if(page==='photo') renderAdmPhoto();
+}
+
+function renderDashboard(){
+  document.getElementById('dashStatsRow').innerHTML = [
+    {label:'Skills',num:DB.skills.length,icon:'🏷️'},
+    {label:'Expertise Cards',num:DB.expertise.length,icon:'🔬'},
+    {label:'Experience Items',num:DB.experience.length,icon:'💼'},
+    {label:'Credentials',num:DB.credentials.length,icon:'📜'}
+  ].map(s=>`<div class="adm-stat-card"><div class="adm-stat-label">${s.icon} ${s.label}</div><div class="adm-stat-num">${s.num}</div><div class="adm-stat-sub">Total items</div></div>`).join('');
+  document.getElementById('dashActivity').innerHTML = [
+    {s:'Profile',n:1,upd:'Just now',st:'green'},
+    {s:'Skills',n:DB.skills.length,upd:'Live',st:'green'},
+    {s:'Expertise',n:DB.expertise.length,upd:'Live',st:'green'},
+    {s:'Experience',n:DB.experience.length,upd:'Live',st:'gold'},
+    {s:'Education',n:DB.education.length,upd:'Live',st:'gold'},
+    {s:'Credentials',n:DB.credentials.length,upd:'Live',st:'green'},
+    {s:'Contact Info',n:DB.contact.length,upd:'Live',st:'green'},
+    {s:'Hero Stats',n:DB.heroStats.length,upd:'Live',st:'blue'},
+  ].map(r=>`<tr><td>${r.s}</td><td>${r.n}</td><td>${r.upd}</td><td><span class="adm-badge adm-badge-${r.st==='green'?'green':r.st==='blue'?'blue':'gold'}">${r.st==='green'?'Active':'Live'}</span></td></tr>`).join('');
+}
+
+function renderAdmProfile(){
+  const p=DB.profile;
+  document.getElementById('adm-profile').innerHTML=`
+  <div class="adm-profile-grid">
+    <div class="adm-profile-card">
+      <h3>Personal Details</h3>
+      ${[['First Name',p.firstName],['Last Name',p.lastName],['Date of Birth',p.dob],['Place of Birth',p.pob],['Nationality',p.nationality],['Religion',p.religion],['Marital Status',p.marital],['Phone',p.phone],['Email',p.email]].map(([k,v])=>`<div class="adm-kv"><span class="adm-kv-key">${k}</span><span class="adm-kv-val">${v}</span></div>`).join('')}
+      <button class="adm-edit-profile-btn" onclick="openEditProfile()">✏️ Edit Profile</button>
+    </div>
+    <div class="adm-profile-card">
+      <h3>Bio Paragraphs</h3>
+      ${[p.bio1,p.bio2,p.bio3,p.bio4,p.bio5].map((b,i)=>`<div class="adm-kv" style="flex-direction:column;align-items:flex-start;gap:4px;"><span class="adm-kv-key">Bio ${i+1}</span><span class="adm-kv-val" style="font-size:0.78rem;line-height:1.6">${b}</span></div>`).join('')}
+      <button class="adm-edit-profile-btn" onclick="openEditProfile()">✏️ Edit Bio</button>
+    </div>
+  </div>`;
+}
+
+function renderAdmTable(tbodyId, data, fields, headers){
+  const tbody=document.getElementById(tbodyId);
+  if(!tbody) return;
+  tbody.innerHTML=data.map((item,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      ${fields.map(f=>`<td>${item[f]||'—'}</td>`).join('')}
+      <td><div class="adm-actions">
+        <button class="adm-btn-edit" onclick="openEdit('${currentPage}',${item.id})">✏️ Edit</button>
+        <button class="adm-btn-del" onclick="deleteItem('${currentPage}',${item.id})">🗑 Del</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function renderAdmExpertise(){
+  document.getElementById('expertiseTbody').innerHTML = DB.expertise.map((e,i)=>`
+    <tr><td>${i+1}</td><td>${e.icon}</td><td>${e.title}</td><td style="max-width:260px;font-size:0.78rem">${e.desc.substring(0,60)}…</td>
+    <td><div class="adm-actions"><button class="adm-btn-edit" onclick="openEdit('expertise',${e.id})">✏️ Edit</button><button class="adm-btn-del" onclick="deleteItem('expertise',${e.id})">🗑 Del</button></div></td>
+    </tr>`).join('');
+}
+function renderAdmExperience(){
+  document.getElementById('experienceTbody').innerHTML = DB.experience.map((e,i)=>`
+    <tr><td>${i+1}</td><td>${e.period}</td><td>${e.role}</td><td style="font-size:0.78rem">${e.org}</td>
+    <td><div class="adm-actions"><button class="adm-btn-edit" onclick="openEdit('experience',${e.id})">✏️ Edit</button><button class="adm-btn-del" onclick="deleteItem('experience',${e.id})">🗑 Del</button></div></td>
+    </tr>`).join('');
+}
+function renderAdmEducation(){
+  document.getElementById('educationTbody').innerHTML = DB.education.map((e,i)=>`
+    <tr><td>${i+1}</td><td>${e.period}</td><td>${e.qualification}</td><td style="font-size:0.78rem">${e.institution}</td>
+    <td><div class="adm-actions"><button class="adm-btn-edit" onclick="openEdit('education',${e.id})">✏️ Edit</button><button class="adm-btn-del" onclick="deleteItem('education',${e.id})">🗑 Del</button></div></td>
+    </tr>`).join('');
+}
+function renderAdmCredentials(){
+  document.getElementById('credentialsTbody').innerHTML = DB.credentials.map((c,i)=>`
+    <tr><td>${i+1}</td><td>${c.icon}</td><td style="font-size:0.78rem">${c.title}</td><td style="font-size:0.78rem">${c.org}</td>
+    <td><span class="adm-badge adm-badge-${c.badgeType==='green'?'green':'gold'}">${c.badge}</span></td>
+    <td><div class="adm-actions"><button class="adm-btn-edit" onclick="openEdit('credentials',${c.id})">✏️ Edit</button><button class="adm-btn-del" onclick="deleteItem('credentials',${c.id})">🗑 Del</button></div></td>
+    </tr>`).join('');
+}
+function renderAdmContact(){
+  document.getElementById('contactTbody').innerHTML = DB.contact.map((c,i)=>`
+    <tr><td>${i+1}</td><td>${c.icon}</td><td>${c.label}</td><td>${c.value}</td>
+    <td><div class="adm-actions"><button class="adm-btn-edit" onclick="openEdit('contact',${c.id})">✏️ Edit</button><button class="adm-btn-del" onclick="deleteItem('contact',${c.id})">🗑 Del</button></div></td>
+    </tr>`).join('');
+}
+function renderAdmStats(){
+  document.getElementById('statsTbody').innerHTML = DB.heroStats.map((s,i)=>`
+    <tr><td>${i+1}</td><td>${s.num}</td><td>${s.label}</td>
+    <td><div class="adm-actions"><button class="adm-btn-edit" onclick="openEdit('stats',${s.id})">✏️ Edit</button><button class="adm-btn-del" onclick="deleteItem('stats',${s.id})">🗑 Del</button></div></td>
+    </tr>`).join('');
+}
+
+/* ════════════════════════════════════════
+   MODAL FORMS
+════════════════════════════════════════ */
+const modalForms = {
+  skills: (d={})=>`<div class="adm-form-grid">
+    <div class="adm-field span2"><label>Skill Name</label><input id="f_name" value="${d.name||''}"></div>
+    <div class="adm-field span2"><label>Category</label><input id="f_category" value="${d.category||'Clinical'}"></div>
+  </div>`,
+  expertise: (d={})=>`<div class="adm-form-grid">
+    <div class="adm-field"><label>Icon (emoji)</label><input id="f_icon" value="${d.icon||'🔬'}"></div>
+    <div class="adm-field"><label>Title</label><input id="f_title" value="${d.title||''}"></div>
+    <div class="adm-field span2"><label>Description</label><textarea id="f_desc" rows="3">${d.desc||''}</textarea></div>
+  </div>`,
+  experience: (d={})=>`<div class="adm-form-grid">
+    <div class="adm-field"><label>Period</label><input id="f_period" value="${d.period||''}"></div>
+    <div class="adm-field"><label>Role / Title</label><input id="f_role" value="${d.role||''}"></div>
+    <div class="adm-field span2"><label>Organisation</label><input id="f_org" value="${d.org||''}"></div>
+    <div class="adm-field span2"><label>Description (one line per bullet)</label><textarea id="f_desc" rows="4">${d.desc||''}</textarea></div>
+  </div>`,
+  education: (d={})=>`<div class="adm-form-grid">
+    <div class="adm-field"><label>Period</label><input id="f_period" value="${d.period||''}"></div>
+    <div class="adm-field"><label>Qualification</label><input id="f_qualification" value="${d.qualification||''}"></div>
+    <div class="adm-field span2"><label>Institution</label><input id="f_institution" value="${d.institution||''}"></div>
+    <div class="adm-field span2"><label>Description</label><textarea id="f_desc" rows="3">${d.desc||''}</textarea></div>
+  </div>`,
+  credentials: (d={})=>`<div class="adm-form-grid">
+    <div class="adm-field"><label>Icon</label><input id="f_icon" value="${d.icon||'📜'}"></div>
+    <div class="adm-field"><label>Badge Text</label><input id="f_badge" value="${d.badge||''}"></div>
+    <div class="adm-field span2"><label>Title</label><input id="f_title" value="${d.title||''}"></div>
+    <div class="adm-field span2"><label>Organisation</label><input id="f_org" value="${d.org||''}"></div>
+    <div class="adm-field span2"><label>Detail (line breaks OK)</label><textarea id="f_detail" rows="3">${d.detail||''}</textarea></div>
+    <div class="adm-field span2"><label>Badge Type</label><select id="f_badgeType"><option value="green" ${d.badgeType==='green'?'selected':''}>Green</option><option value="gold" ${d.badgeType==='gold'?'selected':''}>Gold</option></select></div>
+  </div>`,
+  contact: (d={})=>`<div class="adm-form-grid">
+    <div class="adm-field"><label>Icon</label><input id="f_icon" value="${d.icon||'📞'}"></div>
+    <div class="adm-field"><label>Label</label><input id="f_label" value="${d.label||''}"></div>
+    <div class="adm-field span2"><label>Value</label><input id="f_value" value="${d.value||''}"></div>
+  </div>`,
+  stats: (d={})=>`<div class="adm-form-grid">
+    <div class="adm-field"><label>Number / Text</label><input id="f_num" value="${d.num||''}"></div>
+    <div class="adm-field"><label>Label</label><input id="f_label" value="${d.label||''}"></div>
+  </div>`,
+  profile: (d)=>`<div class="adm-form-grid">
+    <div class="adm-field"><label>First Name</label><input id="f_firstName" value="${d.firstName}"></div>
+    <div class="adm-field"><label>Last Name</label><input id="f_lastName" value="${d.lastName}"></div>
+    <div class="adm-field"><label>Date of Birth</label><input id="f_dob" value="${d.dob}"></div>
+    <div class="adm-field"><label>Place of Birth</label><input id="f_pob" value="${d.pob}"></div>
+    <div class="adm-field"><label>Nationality</label><input id="f_nationality" value="${d.nationality}"></div>
+    <div class="adm-field"><label>Religion</label><input id="f_religion" value="${d.religion}"></div>
+    <div class="adm-field"><label>Marital Status</label><input id="f_marital" value="${d.marital}"></div>
+    <div class="adm-field"><label>Role / Title</label><input id="f_role" value="${d.role}"></div>
+    <div class="adm-field"><label>Phone</label><input id="f_phone" value="${d.phone}"></div>
+    <div class="adm-field"><label>Email</label><input id="f_email" value="${d.email}"></div>
+    <div class="adm-field span2"><label>Bio Paragraph 1</label><textarea id="f_bio1" rows="2">${d.bio1}</textarea></div>
+    <div class="adm-field span2"><label>Bio Paragraph 2</label><textarea id="f_bio2" rows="2">${d.bio2}</textarea></div>
+    <div class="adm-field span2"><label>Bio Paragraph 3</label><textarea id="f_bio3" rows="2">${d.bio3}</textarea></div>
+    <div class="adm-field span2"><label>Bio Paragraph 4</label><textarea id="f_bio4" rows="2">${d.bio4}</textarea></div>
+    <div class="adm-field span2"><label>Bio Paragraph 5</label><textarea id="f_bio5" rows="2">${d.bio5}</textarea></div>
+  </div>`
+};
+
+const modalSave = {
+  skills: ()=>({ name:v('f_name'), category:v('f_category') }),
+  expertise: ()=>({ icon:v('f_icon'), title:v('f_title'), desc:v('f_desc') }),
+  experience: ()=>({ period:v('f_period'), role:v('f_role'), org:v('f_org'), desc:v('f_desc') }),
+  education: ()=>({ period:v('f_period'), qualification:v('f_qualification'), institution:v('f_institution'), desc:v('f_desc') }),
+  credentials: ()=>({ icon:v('f_icon'), title:v('f_title'), org:v('f_org'), detail:v('f_detail'), badge:v('f_badge'), badgeType:v('f_badgeType') }),
+  contact: ()=>({ icon:v('f_icon'), label:v('f_label'), value:v('f_value') }),
+  stats: ()=>({ num:v('f_num'), label:v('f_label') }),
+  profile: ()=>({ firstName:v('f_firstName'),lastName:v('f_lastName'),dob:v('f_dob'),pob:v('f_pob'),nationality:v('f_nationality'),religion:v('f_religion'),marital:v('f_marital'),role:v('f_role'),phone:v('f_phone'),email:v('f_email'),bio1:v('f_bio1'),bio2:v('f_bio2'),bio3:v('f_bio3'),bio4:v('f_bio4'),bio5:v('f_bio5') })
+};
+
+function v(id){ const el=document.getElementById(id); return el?el.value:''; }
+
+function openAddModal(){
+  editId=null; editSection=currentPage;
+  document.getElementById('modalTitle').textContent='Add ' + (pageTitles[currentPage]||currentPage);
+  document.getElementById('modalBody').innerHTML = modalForms[currentPage] ? modalForms[currentPage]({}) : '';
+  document.getElementById('admModal').classList.remove('hidden');
+}
+
+function openEdit(section, id){
+  editSection=section; editId=id;
+  const arr=DB[section]; const item=arr.find(x=>x.id===id);
+  if(!item) return;
+  document.getElementById('modalTitle').textContent='Edit ' + (pageTitles[section]||section);
+  document.getElementById('modalBody').innerHTML = modalForms[section] ? modalForms[section](item) : '';
+  document.getElementById('admModal').classList.remove('hidden');
+}
+
+function openEditProfile(){
+  editSection='profile'; editId='profile';
+  document.getElementById('modalTitle').textContent='Edit Profile & Bio';
+  document.getElementById('modalBody').innerHTML = modalForms.profile(DB.profile);
+  document.getElementById('admModal').classList.remove('hidden');
+}
+
+function closeModal(){ document.getElementById('admModal').classList.add('hidden'); editId=null; editSection=null; }
+
+function saveModal(){
+  if(!editSection) return;
+  const data = modalSave[editSection] ? modalSave[editSection]() : null;
+  if(!data) return;
+
+  if(editSection==='profile'){
+    Object.assign(DB.profile, data);
+    renderAll();
+    renderAdmProfile();
+    toast('Profile updated successfully!','success');
+  } else {
+    const arr=DB[editSection];
+    if(editId){
+      const i=arr.findIndex(x=>x.id===editId);
+      if(i>-1) arr[i]={...arr[i],...data};
+      toast('Item updated!','success');
+    } else {
+      arr.push({id:nextId(arr),...data});
+      toast('Item added!','success');
+    }
+    renderAll();
+    renderAdminPage(editSection);
+  }
+  closeModal();
+}
+
+function deleteItem(section, id){
+  if(!confirm('Delete this item? This cannot be undone.')) return;
+  const arr=DB[section];
+  const i=arr.findIndex(x=>x.id===id);
+  if(i>-1){ arr.splice(i,1); toast('Item deleted.','success'); }
+  renderAll();
+  renderAdminPage(section);
+}
+
+/* ════════════════════════════════════════
+   SEARCH FILTER
+════════════════════════════════════════ */
+function filterTable(tbodyId, q){
+  const rows=document.getElementById(tbodyId)?.querySelectorAll('tr')||[];
+  const lq=q.toLowerCase();
+  rows.forEach(r=>{ r.style.display=r.textContent.toLowerCase().includes(lq)?'':'none'; });
+}
+
+/* ════════════════════════════════════════
+   TOAST
+════════════════════════════════════════ */
+function toast(msg, type='success'){
+  const t=document.getElementById('admToast');
+  document.getElementById('admToastMsg').textContent=msg;
+  t.querySelector('.adm-toast-icon').textContent=type==='success'?'✅':'❌';
+  t.className='adm-toast show '+(type==='success'?'success':'error');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+/* ════════════════════════════════════════
+   PHOTO MANAGEMENT (Admin only)
+════════════════════════════════════════ */
+let currentPhotoData = null;
+
+function renderAdmPhoto(){
+  // sync preview with current state
+  const preview = document.getElementById('admPhotoPreview');
+  const status  = document.getElementById('admPhotoStatus');
+  const removeBtn = document.getElementById('admRemovePhotoBtn');
+  const initials  = document.getElementById('admPhotoInitials');
+  if(!preview) return;
+  if(currentPhotoData){
+    preview.innerHTML = `<img src="${currentPhotoData}" alt="Profile" style="width:100%;height:100%;object-fit:cover;object-position:center top;">`;
+    if(status)   status.textContent = '✅ Photo uploaded and live on site';
+    if(status)   status.style.color = '#22c55e';
+    if(removeBtn) removeBtn.style.display = 'block';
+  } else {
+    preview.innerHTML = `<span id="admPhotoInitials" style="font-family:'Cormorant Garamond',serif;font-size:4rem;color:#c9a96e;opacity:0.7;">EA</span>`;
+    if(status)   status.textContent = 'No photo uploaded yet';
+    if(status)   status.style.color = '#6b7280';
+    if(removeBtn) removeBtn.style.display = 'none';
+  }
+}
+
+function applyPhotoToSite(dataUrl){
+  const core = document.getElementById('avatarCore');
+  const ph   = document.getElementById('avatarPlaceholder');
+  if(ph) ph.remove();
+  const ex = core.querySelector('img');
+  if(ex) ex.remove();
+  if(dataUrl){
+    const img = document.createElement('img');
+    img.src = dataUrl; img.alt = 'Emmanuel Abakah';
+    core.insertBefore(img, core.querySelector('.avatar-shimmer'));
+  } else {
+    // restore placeholder
+    const placeholder = document.createElement('div');
+    placeholder.id = 'avatarPlaceholder';
+    placeholder.className = 'avatar-placeholder';
+    placeholder.innerHTML = `<span class="avatar-initials">EA</span><span class="avatar-hint">EA</span>`;
+    core.insertBefore(placeholder, core.querySelector('.avatar-shimmer'));
+  }
+}
+
+function handleAdmPhoto(input){
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    currentPhotoData = e.target.result;
+    applyPhotoToSite(currentPhotoData);
+    renderAdmPhoto();
+    toast('Photo uploaded and applied to site! 🎉','success');
+    // Highlight drop zone
+    const dz = document.getElementById('admDropZone');
+    if(dz){ dz.style.borderColor='rgba(34,197,94,0.5)'; dz.style.background='rgba(34,197,94,0.04)'; }
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto(){
+  if(!confirm('Remove the profile photo? The initials placeholder will be shown instead.')) return;
+  currentPhotoData = null;
+  applyPhotoToSite(null);
+  renderAdmPhoto();
+  // Reset drop zone
+  const dz = document.getElementById('admDropZone');
+  if(dz){ dz.style.borderColor='rgba(20,184,174,0.3)'; dz.style.background='rgba(20,184,174,0.03)'; }
+  // Reset file input
+  const inp = document.getElementById('admPhotoInput');
+  if(inp) inp.value = '';
+  toast('Photo removed.','success');
+}
+
+function admDragOver(e){
+  e.preventDefault();
+  const dz = document.getElementById('admDropZone');
+  if(dz){ dz.style.borderColor='rgba(20,184,174,0.7)'; dz.style.background='rgba(20,184,174,0.08)'; }
+}
+function admDragLeave(e){
+  const dz = document.getElementById('admDropZone');
+  if(dz){ dz.style.borderColor='rgba(20,184,174,0.3)'; dz.style.background='rgba(20,184,174,0.03)'; }
+}
+function admDrop(e){
+  e.preventDefault();
+  admDragLeave(e);
+  const file = e.dataTransfer.files[0];
+  if(!file || !file.type.startsWith('image/')) return toast('Please drop an image file.','error');
+  const fakeInput = { files:[file] };
+  handleAdmPhoto(fakeInput);
+}
+
+/* ════════════════════════════════════════
+   SCROLL REVEAL
+════════════════════════════════════════ */
+let revealObs;
+function reObserve(){
+  if(revealObs) revealObs.disconnect();
+  revealObs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');}),{threshold:0.1});
+  document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>revealObs.observe(el));
+}
+
+/* ════════════════════════════════════════
+   NAV / CURSOR
+════════════════════════════════════════ */
+const glow=document.getElementById('cursorGlow');
+document.addEventListener('mousemove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px';});
+const nav=document.getElementById('mainNav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>40));
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('open');}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('open');}
+const sections=document.querySelectorAll('section[id]');
+const navLinks=document.querySelectorAll('.nav-links a:not(.nav-cta):not(.nav-admin-btn)');
+new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(a=>a.style.color='');const ac=document.querySelector(`.nav-links a[href="#${e.target.id}"]`);if(ac)ac.style.color='var(--gold)';}}),{threshold:0.5}).observe&&sections.forEach(s=>new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(a=>a.style.color='');const ac=document.querySelector(`.nav-links a[href="#${e.target.id}"]`);if(ac)ac.style.color='var(--gold)';}}).bind(null),{threshold:0.5}).observe(s));
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+renderAll();
+reObserve();
+</script>
+</body>
+</html>
