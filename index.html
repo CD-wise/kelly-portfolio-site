@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#070e1c">
 <title>Emmanuel Abakah | Medical Sonographer & Administrator</title>
@@ -865,15 +865,81 @@ tr:hover td{background:rgba(255,255,255,0.015);color:#e5e7eb;}
 <!-- Load Supabase Configuration -->
 <script src="config.js"></script>
 
-<!-- Supabase Client Library (UMD Build) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/main.umd.js"></script>
+<!-- Supabase Client Library -->
+<script async defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0"></script>
 
 <script>
-// Initialize Supabase
-const supabaseClient = window.supabase.createClient(
-  window.SUPABASE_CONFIG.URL,
-  window.SUPABASE_CONFIG.ANON_KEY
-);
+// Initialize Supabase - Wait for library to load
+let supabaseClient = null;
+
+async function initSupabase() {
+  try {
+    // Try multiple ways to access the Supabase library
+    const SupabaseLib = window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
+    if (!SupabaseLib || !SupabaseLib.createClient) {
+      throw new Error('Supabase library not loaded');
+    }
+    supabaseClient = SupabaseLib.createClient(
+      window.SUPABASE_CONFIG.URL,
+      window.SUPABASE_CONFIG.ANON_KEY
+    );
+    console.log('✅ Supabase initialized successfully');
+  } catch (error) {
+    console.warn('⚠️ Supabase not available, using local data only:', error.message);
+  }
+}
+
+// Track if page has been rendered
+let pageRendered = false;
+
+function markAsRendered() {
+  if (!pageRendered) {
+    pageRendered = true;
+    console.log('📄 Page marked as rendered');
+  }
+}
+
+// Wrap all render calls to mark page as rendered
+const originalRenderAll = renderAll;
+renderAll = function() {
+  originalRenderAll();
+  markAsRendered();
+};
+
+// Safety fallback: force render after 3 seconds if not already rendered
+setTimeout(() => {
+  if (!pageRendered) {
+    console.warn('⚠️ Fallback: Page not rendered after 3s, forcing render now...');
+    renderAll();
+  }
+}, 3000);
+
+// Wait for DOM and libraries to load, then initialize
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    console.log('🚀 DOM loaded, initializing page...');
+    
+    // Step 1: Initialize Supabase (with delay for library loading)
+    await new Promise(resolve => {
+      setTimeout(() => {
+        initSupabase();
+        resolve();
+      }, 500);
+    });
+
+    // Step 2: Load data and render page
+    console.log('📦 Loading data and rendering page...');
+    await loadDataFromSupabase();
+    
+    // Step 3: Verify rendering
+    console.log('✅ Page fully initialized and rendered');
+  } catch (error) {
+    console.error('❌ Error during initialization:', error.message);
+    console.log('🔄 Forcing page render with default data...');
+    // Force render even if there's an error
+    renderAll();
+  }
+});
 
 /* ════════════════════════════════════════
    DATA STORE
@@ -953,15 +1019,22 @@ let editSection = null;
 ════════════════════════════════════════ */
 async function loadDataFromSupabase() {
   try {
+    if (!supabaseClient) {
+      console.log('⚠️ Supabase client not available, using default data');
+      renderAll();
+      return;
+    }
+
+    console.log('🔄 Loading data from Supabase...');
     const [profileRes, skillsRes, expertiseRes, experienceRes, educationRes, credentialsRes, contactRes, statsRes] = await Promise.all([
-      supabaseClient.from('profile').select('*').single(),
-      supabaseClient.from('skills').select('*').order('id'),
-      supabaseClient.from('expertise').select('*').order('id'),
-      supabaseClient.from('experience').select('*').order('id'),
-      supabaseClient.from('education').select('*').order('id'),
-      supabaseClient.from('credentials').select('*').order('id'),
-      supabaseClient.from('contact').select('*').order('id'),
-      supabaseClient.from('hero_stats').select('*').order('id')
+      supabaseClient.from('profile').select('*').single().catch(e => ({ data: null, error: e })),
+      supabaseClient.from('skills').select('*').order('id').catch(e => ({ data: null, error: e })),
+      supabaseClient.from('expertise').select('*').order('id').catch(e => ({ data: null, error: e })),
+      supabaseClient.from('experience').select('*').order('id').catch(e => ({ data: null, error: e })),
+      supabaseClient.from('education').select('*').order('id').catch(e => ({ data: null, error: e })),
+      supabaseClient.from('credentials').select('*').order('id').catch(e => ({ data: null, error: e })),
+      supabaseClient.from('contact').select('*').order('id').catch(e => ({ data: null, error: e })),
+      supabaseClient.from('hero_stats').select('*').order('id').catch(e => ({ data: null, error: e }))
     ]);
 
     // Map Supabase data to DB object
@@ -1115,20 +1188,56 @@ function renderContact() {
 /* ════════════════════════════════════════
    ADMIN AUTH
 ════════════════════════════════════════ */
-const ADM_USER = 'druterus', ADM_PASS = 'kelly123';
 function openAdminLogin(){ document.getElementById('admLoginOverlay').classList.remove('hidden'); }
-function admLogin(){
+
+async function admLogin(){
   const u=document.getElementById('admUser').value.trim();
   const p=document.getElementById('admPass').value.trim();
-  if(u===ADM_USER && p===ADM_PASS){
+  const errMsg=document.getElementById('admLoginErr');
+  
+  if(!u || !p){
+    errMsg.textContent='Username and password are required.';
+    return;
+  }
+  
+  try {
+    // Query admin_users table
+    const { data, error } = await supabaseClient
+      .from('admin_users')
+      .select('*')
+      .eq('username', u)
+      .eq('password_hash', p)
+      .eq('is_active', true)
+      .single();
+    
+    if(error || !data){
+      errMsg.textContent='Invalid username or password.';
+      return;
+    }
+    
+    // Login successful
     document.getElementById('admLoginOverlay').classList.add('hidden');
     document.getElementById('admPanel').classList.remove('hidden');
     document.getElementById('publicSite').style.display='none';
+    errMsg.textContent='';
+    
+    // Store login info (optional)
+    sessionStorage.setItem('adm_user', data.username);
+    sessionStorage.setItem('adm_id', data.id);
+    
+    // Update last login
+    await supabaseClient
+      .from('admin_users')
+      .update({ last_login: new Date() })
+      .eq('id', data.id);
+    
     admGo('dashboard');
-  } else {
-    document.getElementById('admLoginErr').textContent='Invalid username or password.';
+  } catch(err){
+    console.error('Login error:', err);
+    errMsg.textContent='An error occurred. Please try again.';
   }
 }
+
 function admLogout(){
   document.getElementById('admPanel').classList.add('hidden');
   document.getElementById('publicSite').style.display='';
